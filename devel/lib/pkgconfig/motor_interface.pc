@@ -1,0 +1,8 @@
+prefix=/home/wilson/ros_ws_1/devel
+
+Name: motor_interface
+Description: Description of motor_interface
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

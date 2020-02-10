@@ -1,0 +1,2 @@
+beginner_tutorials:motor_interface:tae_psoc
+-DCATKIN_DEVEL_PREFIX=/home/wilson/ros_ws_1/devel -DCMAKE_INSTALL_PREFIX=/home/wilson/ros_ws_1/install -G Unix Makefiles

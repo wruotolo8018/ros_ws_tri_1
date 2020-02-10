@@ -1,0 +1,8 @@
+prefix=/home/wilson/ros_ws_1/devel
+
+Name: tae_psoc
+Description: Description of tae_psoc
+Version: 0.1.0
+Cflags: -I/home/wilson/ros_ws_1/devel/include
+Libs: -L${prefix}/lib 
+Requires: rospy message_runtime roscpp
