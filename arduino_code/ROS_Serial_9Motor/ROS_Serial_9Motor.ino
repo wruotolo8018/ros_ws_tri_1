@@ -38,19 +38,17 @@ void setup() {
   Serial.begin(115200);
 }
 
-//char inString[18];
 char inChar;
-//int i = 0;
 int readLength = 0; 
 int pwm1 = 0;
 int mappedPWM = 0;
 int curTime = millis();
 int prevTime = millis();
 int printInterval = 3000;
-bool printing = true;
 int pwmValArray[13];
 int pwmDirArray[13]; // just for debugging
 
+bool printing = true;
 
 void loop() {
 
@@ -72,6 +70,9 @@ void loop() {
 
   if (Serial.available() > 0){
     readLength = Serial.available();
+//    Serial.print("available bytes \n");
+//    Serial.read();
+
     if (readLength == 18) {
       // Read inputs and process
       String inString = "";
@@ -104,13 +105,15 @@ void loop() {
           pwmDirArray[i] = 1;
         }
       }
+      while (Serial.available() > 0) {
+          Serial.read();  
+      }
     }
     else if (readLength > 18) {
       while (Serial.available() > 0) {
         Serial.read();  
       }
     }
-    
   }
 }
 
