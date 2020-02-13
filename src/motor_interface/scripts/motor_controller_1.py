@@ -13,7 +13,7 @@ def motor_controller():
     rospy.init_node('motor_controller', anonymous=True)
     
     # Make serial connection to arduino
-    com = serial.Serial('/dev/ttyACM0',baudrate=9600)
+    com = serial.Serial('/dev/ttyACM0',baudrate=115200)
     time.sleep(1.2)
     
     # Test connection by sending and reading a message
@@ -25,27 +25,19 @@ def motor_controller():
 #    pub = rospy.Publisher('motor_commands', String, queue_size=10)
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
-        
-#        message = bytes('80', 'utf-8')
-#        com.write(message)
-#        time.sleep(1.0)
-#        message = bytes('80', 'utf-8')
 
+        inString = com.read_all().decode('ascii')  #.decode('utf-8')
+        print(inString)
+        time.sleep(.5)
+        
         if verbose:
-#            time.sleep(2.0)
             tempString = input('Enter pwm value (0-99): ')
             message = bytes(tempString, 'utf-8')
             com.write(message)
-#            time.sleep(2.0)
+#            time.sleep(0.5)
 #            inString = com.read_all().decode('ascii')  #.decode('utf-8')
 #            rospy.loginfo(inString)
         
-#        rate.sleep()
-        
-#        
-#        hello_str = "Send command: alfdjalskd %s" % rospy.get_time()
-#        rospy.loginfo(hello_str)
-#        pub.publish(hello_str)
 #        rate.sleep()
 
 if __name__ == '__main__':
