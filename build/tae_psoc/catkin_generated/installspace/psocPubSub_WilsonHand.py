@@ -206,19 +206,19 @@ def mainLoop(savingFileName):
             
 
             ts.packet_size = ord(ts.ser.read(1))-1
-            num_sensors_1= (ts.packet_size - 1) / 2    
+            num_sensors_1= int((ts.packet_size - 1) / 2)    
 
-            ts.num_sensors= (ts.packet_size - 1) / 2
+            ts.num_sensors= int((ts.packet_size - 1) / 2)
             ts.unpackFormat = '<'
             for i in range(0,ts.packet_size):
                 ts.unpackFormat = ts.unpackFormat + 'B'
                 
             
             if IsTwoModeMerged: #% Deal with Merging Techniq
-                num_sensors_1 = num_sensors_1/2
-                
-                sensorIndexInData_1 = list(range(num_sensors_1,(ts.packet_size - 1) / 2) )  # Last Half is the Fast Mode
-                sensorIndexInData_2 = list(range(0, num_sensors_1))    # First Half is the Indiv Mod
+                num_sensors_1 = int(num_sensors_1/2)
+                print(ts.packet_size)
+                sensorIndexInData_1 = list(range(int(num_sensors_1),int((ts.packet_size - 1) / 2)) )  # Last Half is the Fast Mode
+                sensorIndexInData_2 = list(range(0, int(num_sensors_1)))    # First Half is the Indiv Mod
                 
                 groupIndexMax = num_sensors_2/ num_sensors_1 -1; #% Follows C convention
                 
@@ -294,9 +294,9 @@ def mainLoop(savingFileName):
                     readCountArray[thisSensorIdx,0] += 1
 
                     # Indiv Mode
-                    groupIndex = ts.groupIndex
+                    groupIndex = int(ts.groupIndex)
 
-                    sensor_data_history_Indiv[readCountArray[thisSensorIdx,1], groupIndex*num_sensors_1:(groupIndex+1)*num_sensors_1, thisSensorIdx]= tempSampledData[0,sensorIndexInData_2]
+                    sensor_data_history_Indiv[readCountArray[thisSensorIdx,1], groupIndex*int(num_sensors_1):(groupIndex+1)*int(num_sensors_1), thisSensorIdx]= tempSampledData[0,sensorIndexInData_2]
                     if groupIndex == groupIndexMax:
                         sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] = sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] - sensor_offset_Indiv[0,:,thisSensorIdx]
                         readCountArray[thisSensorIdx,1] += 1
@@ -392,26 +392,26 @@ def mainLoop(savingFileName):
             #%% Save Output
             
             
-            directory = ResultSavingDirectory +'/' + currDateOnlyString
-            if not os.path.exists(directory):
-            	os.makedirs(directory)
-
-            
-            output_file = directory + '/'+ 'result_' +currDateTimeString + SavingFileName + '.mat'
-            	
-            # # currDateString = datetime.datetime.now().strftime("%y%m%d_%H%M%S_")
-            # output_file = ResultSavingDirectory + '/'+ 'result_' +currDateString + SavingFileName + '.csv'
-            
-
-            # Save as .mat file
-            savemat(output_file, 
-                {'sensor_data_history_Fast':sensor_data_history_Fast,
-                 'sensor_data_history_Indiv':sensor_data_history_Indiv,
-                  'sensingMode' : sensingMode,                  
-                  })
-
-            # np.savetxt(output_file, sensor_1_data_history_second, delimiter=",")
-            print("file Saved")
+#            directory = ResultSavingDirectory +'/' + currDateOnlyString
+#            if not os.path.exists(directory):
+#            	os.makedirs(directory)
+#
+#            
+#            output_file = directory + '/'+ 'result_' +currDateTimeString + SavingFileName + '.mat'
+#            	
+#            # # currDateString = datetime.datetime.now().strftime("%y%m%d_%H%M%S_")
+#            # output_file = ResultSavingDirectory + '/'+ 'result_' +currDateString + SavingFileName + '.csv'
+#            
+#
+#            # Save as .mat file
+#            savemat(output_file, 
+#                {'sensor_data_history_Fast':sensor_data_history_Fast,
+#                 'sensor_data_history_Indiv':sensor_data_history_Indiv,
+#                  'sensingMode' : sensingMode,                  
+#                  })
+#
+#            # np.savetxt(output_file, sensor_1_data_history_second, delimiter=",")
+#            print("file Saved")
 
             CMD_in = NO_CMD
             currState = IDLE
