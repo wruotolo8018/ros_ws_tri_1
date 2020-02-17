@@ -48,7 +48,7 @@ int printInterval = 3000;
 int pwmValArray[13];
 int pwmDirArray[13]; // just for debugging
 
-bool printing = true;
+bool printing = false;
 
 void loop() {
 
@@ -70,13 +70,11 @@ void loop() {
 
   if (Serial.available() > 0){
     readLength = Serial.available();
-//    Serial.print("available bytes \n");
-//    Serial.read();
 
     if (readLength == 18) {
       // Read inputs and process
       String inString = "";
-      for (int x = 0; x<readLength+5; x++) {
+      while(Serial.available() > 0) {
         inChar = Serial.read();
         inString += inChar;
       }
@@ -85,9 +83,12 @@ void loop() {
       // Map inString to separate motor commands and save in array
       for (int i = 0; i<9; i++) {
         // next line may not be right
-        int firstDigit = inString[i*2];
-        int secondDigit = inString[i*2+1];
-        int pwmValTemp = firstDigit*10 + secondDigit;
+        char firstDigit = inString[i*2];
+        char secondDigit = inString[i*2+1];
+        int firstDigitInt = firstDigit - '0';
+        int secondDigitInt = secondDigit - '0';
+        int pwmValTemp = firstDigitInt*10 + secondDigitInt;
+        Serial.println(pwmValTemp);
         pwmValArray[i+1] = pwmValTemp;
       }
 
@@ -104,10 +105,21 @@ void loop() {
           runMotor(i,1,mappedPWM);
           pwmDirArray[i] = 1;
         }
+        else {
+          runMotor(i,0,0);
+        }
       }
       while (Serial.available() > 0) {
           Serial.read();  
       }
+      Serial.print("\nMotor values: ");
+      for (int i = 1; i <= 9; i++) {
+        Serial.print(pwmValArray[i]);
+        Serial.print(":");
+        Serial.print(pwmDirArray[i]);
+        Serial.print("  ");
+      }
+      Serial.print("\n");
     }
     else if (readLength > 18) {
       while (Serial.available() > 0) {
@@ -116,6 +128,8 @@ void loop() {
     }
   }
 }
+
+
 
 void runMotor(int motorSelect, int dir, int pwmVal) {
   analogWrite(pwmArray[motorSelect], pwmVal);
