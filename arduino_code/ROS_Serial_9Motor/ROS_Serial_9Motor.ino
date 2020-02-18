@@ -53,20 +53,20 @@ bool printing = false;
 void loop() {
 
   curTime = millis();
-  if (printing) {
-    if (curTime - prevTime > printInterval) {
-      // Print current motor commanded pwms and directions
-      Serial.print("\nMotor values: ");
-      for (int i = 1; i <= 9; i++) {
-        Serial.print(pwmValArray[i]);
-        Serial.print(":");
-        Serial.print(pwmDirArray[i]);
-        Serial.print("  ");
-      }
-      Serial.print("\n");
-      prevTime = curTime;
-    }
-  }
+//  if (printing) {
+//    if (curTime - prevTime > printInterval) {
+//      // Print current motor commanded pwms and directions
+//      Serial.print("\nMotor values: ");
+//      for (int i = 1; i <= 9; i++) {
+//        Serial.print(pwmValArray[i]);
+//        Serial.print(":");
+//        Serial.print(pwmDirArray[i]);
+//        Serial.print("  ");
+//      }
+//      Serial.print("\n");
+//      prevTime = curTime;
+//    }
+//  }
 
   if (Serial.available() > 0){
     readLength = Serial.available();
@@ -78,7 +78,7 @@ void loop() {
         inChar = Serial.read();
         inString += inChar;
       }
-      Serial.print(inString);
+//      Serial.print(inString);
       
       // Map inString to separate motor commands and save in array
       for (int i = 0; i<9; i++) {
@@ -88,7 +88,7 @@ void loop() {
         int firstDigitInt = firstDigit - '0';
         int secondDigitInt = secondDigit - '0';
         int pwmValTemp = firstDigitInt*10 + secondDigitInt;
-        Serial.println(pwmValTemp);
+//        Serial.println(pwmValTemp);
         pwmValArray[i+1] = pwmValTemp;
       }
 
@@ -112,14 +112,14 @@ void loop() {
       while (Serial.available() > 0) {
           Serial.read();  
       }
-      Serial.print("\nMotor values: ");
-      for (int i = 1; i <= 9; i++) {
-        Serial.print(pwmValArray[i]);
-        Serial.print(":");
-        Serial.print(pwmDirArray[i]);
-        Serial.print("  ");
-      }
-      Serial.print("\n");
+//      Serial.print("\nMotor values: ");
+//      for (int i = 1; i <= 9; i++) {
+//        Serial.print(pwmValArray[i]);
+//        Serial.print(":");
+//        Serial.print(pwmDirArray[i]);
+//        Serial.print("  ");
+//      }
+//      Serial.print("\n");
     }
     else if (readLength > 18) {
       while (Serial.available() > 0) {
@@ -128,8 +128,6 @@ void loop() {
     }
   }
 }
-
-
 
 void runMotor(int motorSelect, int dir, int pwmVal) {
   analogWrite(pwmArray[motorSelect], pwmVal);
@@ -149,17 +147,3 @@ void stopAll() {
   }
   Serial.println("\nStopping All Motors");
 }
-
-//void close(int pwm){
-//  analogWrite(mp1, pwm);
-//  analogWrite(mp2, 0);
-//}
-//
-//void open(int pwm){
-//  analogWrite(mp1, 0);
-//  analogWrite(mp2, pwm);
-//}
-//void stop(void){
-//  analogWrite(mp1, 0);
-//  analogWrite(mp2, 0);
-//}
