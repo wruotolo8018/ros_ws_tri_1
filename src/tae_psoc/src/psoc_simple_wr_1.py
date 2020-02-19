@@ -16,68 +16,49 @@ from tae_psoc.msg import SensorPacket
 from tae_psoc.msg import cmdToPsoc
 from tae_psoc.msg import Sensor_Fast
 from tae_psoc.msg import Sensor_Indiv
+from std_msgs.msg import String
 
+# Wilson variables
+# State definitions
 IDLE = 0
-STREAMING = 1
-NO_CMD = 0
-START_CMD = 2
-IDLE_CMD = 3
-currState = IDLE
-CMD_in = NO_CMD
-UR5_Y_pos = 0 # in mm
+SETUP_SENSOR = 1
+STREAMING = 2
+SHUTDOWN_SENSOR = 3
+state = IDLE
+sensor_select = 36 # Default to MODE_TORSION_AND_INDIV
 
-def callback(data):
-    global CMD_in
-    CMD_in = data.cmdInput
+# Global variables for use later
+periodInput = np.zeros(2)
+num_sensors_2 = 0
+IsTwoModeMerged = False
 
-def mainLoop():
-    print("Got to MAIN LOOP")
-    global currState
-    global CMD_in   
-    global gripperPosInput
-    global UR5_Y_pos
+# Boolean for determining whether already set up or not
+is_setup = False
 
-    # Start node
-    rospy.init_node('psocPubSub_WilsonHand')
+def state_callback(data):
+    incomingString = data.data
+    global state, sensor_select
+    if (incomingString == "manual_input"):
+        state = SHUTDOWN_SENSOR
+    elif (incomingString == "drive_hand"):
+        state = SETUP_SENSOR
+        sensor_select = MODE_TORSION_AND_INDIV
+
+# Sensor mode options
+MODE_ONE_PAD = 0 
+MODE_FOUR_PAD = 1
+MODE_NINE_PAD = 2
+MODE_INDIVIDUAL = 3
+MODE_CAPSENSE = 17
+MODE_ONE_AND_FOUR =32   #Problematic  at 1kHz
+MODE_NINE_AND_INDIV= 33 
+MODE_ONE_AND_NINE = 34  #Problematic
+MODE_FOUR_AND_INDIV = 35 # 250
+MODE_TORSION_AND_INDIV = 36 #0X24
+def set_sensor_mode(sensingMode): 
+    global periodInput, num_sensors_2, IsTwoModeMerged
+#    slopeCompensateOn = True
     
-    # Subscribe to cmdToPsoc which controls start and stop of the sensor reading
-    # TODO: make this change mode? 
-    rospy.Subscriber('cmdToPsoc',cmdToPsoc, callback)
-        
-    # Publish to sensor topic depending on mode
-    pub_Fast = rospy.Publisher('Sensor_Fast', Sensor_Fast, queue_size=1)
-    pub_Indiv = rospy.Publisher('Sensor_Indiv', Sensor_Indiv, queue_size=1)
-    msg_Fast = Sensor_Fast()
-    msg_Indiv = Sensor_Indiv() 
-    
-    # Old tae data saving stuff
-#    ResultSavingDirectory = '/home/tae/Data'
-#    SavingFileName = savingFileName  #'test_box'
-    
-    counter = 0
-    SensorExist = 1
-    plotShow = 1
-    SensorNum = 3
-    SensorAddress = np.array([8, 9, 10])
-
-    MODE_ONE_PAD = 0 
-    MODE_FOUR_PAD = 1
-    MODE_NINE_PAD = 2
-    MODE_INDIVIDUAL = 3
-    MODE_CAPSENSE = 17
-    MODE_ONE_AND_FOUR =32   #Problematic  at 1kHz
-    MODE_NINE_AND_INDIV= 33 
-    MODE_ONE_AND_NINE = 34  #Problematic
-    MODE_FOUR_AND_INDIV = 35; # 250
-    MODE_TORSION_AND_INDIV = 36; #0X24
-
-    #################################3# Sensing MODE Select@!!!1 @#####################################
-    # sensingMode = MODE_FOUR_AND_INDIV
-    sensingMode = MODE_TORSION_AND_INDIV
-
-    slopeCompensateOn = True
-
-    IsTwoModeMerged = False
     if sensingMode == MODE_ONE_PAD:
         SamplingFreq = 1.5e3
     elif sensingMode == MODE_FOUR_PAD:
@@ -99,7 +80,6 @@ def mainLoop():
         num_sensors_2 = 36
         IsTwoModeMerged = True
     elif sensingMode == MODE_FOUR_AND_INDIV or sensingMode == MODE_TORSION_AND_INDIV:        
-#        SamplingFreq = 5# For now let's keep it 250, it was 300
         SamplingFreq = 250 # For now let's keep it 250, it was 300
         num_sensors_2 = 36
         IsTwoModeMerged = True
@@ -109,21 +89,41 @@ def mainLoop():
     tempPeriodInput = divmod(math.floor(SamplingPeriod * KitprogTimerClockFreq) , 2**8)
     periodInput = np.array([tempPeriodInput[1], tempPeriodInput[0]])
 
+def psoc_pub_sub():
+    print("Started psoc_pub_sub")
+    global state, num_sensors_2
+
+    # Start node
+    rospy.init_node('psoc_pub_sub')
+    
+    # Subscribe to master_state to know which sensors to be publishing
+    rospy.Subscriber('master_state',String, state_callback)
+        
+    # Setup publishers for use later depending on state
+    pub_Fast = rospy.Publisher('Sensor_Fast', Sensor_Fast, queue_size=1)
+    pub_Indiv = rospy.Publisher('Sensor_Indiv', Sensor_Indiv, queue_size=1)
+    msg_Fast = Sensor_Fast()
+    msg_Indiv = Sensor_Indiv() 
+    
+    # Setup variables: Tae's stuff... don't know exact details
+    counter = 0
+    SensorExist = 1
+    plotShow = 1
+    SensorNum = 3
+    SensorAddress = np.array([8, 9, 10])
+
+
     #%% We loop
     while not rospy.is_shutdown():
-        if currState == IDLE and CMD_in == START_CMD:
-            print("LOOPING\n")
-            CMD_in = NO_CMD
-            currState = STREAMING
-            currDateTimeString = datetime.datetime.now().strftime("%y%m%d_%H%M%S_")
+        if (state == SETUP_SENSOR):
+            # Set sensor mode
+            set_sensor_mode(sensor_select)
+            sensingMode = sensor_select
             
-            # Keep in case we want to save data later
-        #    output_file = ResultSavingDirectory + '\\'+ 'result_' +currDateString + SavingFileName + '.html'
-
-            # TODO: allocate serial ports how we want them with motors and sensors
-            ts = psoc.TactileSensor(port="/dev/ttyACM0")
+            # Allocate serial ports how we want them with motors and sensors
+            ts = psoc.TactileSensor(port="/dev/ttyACM1")
             ts.ser.flushInput()
-
+            
             # Assigning the Number of Sensor and Address
             thisInputArray = np.append(np.append(ord('a'), SensorNum), SensorAddress)
             ts.sendNum(thisInputArray)    
@@ -182,158 +182,93 @@ def mainLoop():
             sensor_offsetObtained = False
 
             #%%
-            tic = time.time()
-            stopCMDsent = False
-            snsIndex = 0   
+#            tic = time.time()
+#            stopCMDsent = False
+#            snsIndex = 0   
 
             #Start Streaming
             ts.sendChar("s")
+            
+            global is_setup
+            is_setup = True
+            print("Sensor setup and streaming")
+            state = STREAMING
+            
+        elif (state == STREAMING):
+            while True:
+                firstByte = ord(ts.ser.read(1))
+                if firstByte % 16 == ts.STX:  # Changed for Address Info coupling
+                   thisAddress = math.floor(firstByte / 16)
+                   thisSensorIdx = np.where(SensorAddress == thisAddress)[0]
+                   if thisSensorIdx.size == 1:
+                       thisSensorIdx = thisSensorIdx[0]
+                       break
 
-            currDateOnlyString = datetime.datetime.now().strftime("%y%m%d")
-
-            # Loop for getting sensor readings
-            while not CMD_in == IDLE_CMD:
-
-                #while ord(ts.ser.read(1)) != ts.STX:
-                while True:
-                    firstByte = ord(ts.ser.read(1))
-                    if firstByte % 16 == ts.STX:  # Changed for Address Info coupling
-                       thisAddress = math.floor(firstByte / 16)
-                       thisSensorIdx = np.where(SensorAddress == thisAddress)[0]
-                       if thisSensorIdx.size == 1:
-                           thisSensorIdx = thisSensorIdx[0]
-                           break
-
-
-                #Read rest of the data
-                tempSampledData = ts.readRestData()       
-
-                if IsTwoModeMerged:
-                    #Fast Mode
-                    sensor_data_history_Fast[readCountArray[thisSensorIdx,0], :, thisSensorIdx] = tempSampledData[0,sensorIndexInData_1] - sensor_offset_Fast[0,:,thisSensorIdx]
-                    readCountArray[thisSensorIdx,0] += 1
-
-                    # Indiv Mode
-                    groupIndex = int(ts.groupIndex)
-
-                    sensor_data_history_Indiv[readCountArray[thisSensorIdx,1], groupIndex*int(num_sensors_1):(groupIndex+1)*int(num_sensors_1), thisSensorIdx]= tempSampledData[0,sensorIndexInData_2]
-                    if groupIndex == groupIndexMax:
-                        sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] = sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] - sensor_offset_Indiv[0,:,thisSensorIdx]
-                        readCountArray[thisSensorIdx,1] += 1
-
-                    if sensor_offsetObtained and thisSensorIdx == SensorNum-1:
-                        #Make the Fast Message
-                        msg_Fast.sns_1_Fast = sensor_data_history_Fast[readCountArray[0,0]-1,:,0]
-                        if SensorNum >= 2:
-                            msg_Fast.sns_2_Fast = sensor_data_history_Fast[readCountArray[1,0]-1,:,1]
-                            if SensorNum==3:
-                                msg_Fast.sns_3_Fast = sensor_data_history_Fast[readCountArray[2,0]-1,:,2]
-                        pub_Fast.publish(msg_Fast)
-
-                        # Make the Indiv Message
-                        if groupIndex == groupIndexMax:
-                            #Make the Fast Message
-                            msg_Indiv.sns_1_Indiv = sensor_data_history_Indiv[readCountArray[0,1]-1,:,0]
-                            if SensorNum >= 2:
-                                msg_Indiv.sns_2_Indiv = sensor_data_history_Indiv[readCountArray[1,1]-1,:,1]
-                                if SensorNum==3:
-                                    msg_Indiv.sns_3_Indiv = sensor_data_history_Indiv[readCountArray[2,1]-1,:,2]
-
-                            pub_Indiv.publish(msg_Indiv)
-
-                    # Obtain Offset from initial few samples
-                    if not sensor_offsetObtained and  readCountArray[SensorNum-1,1] == initialSamplingNum:
-                        for i in range(0,SensorNum):
-                            sensor_offset_Fast[0,:,i] = np.mean(sensor_data_history_Fast[readCountArray[i,0]-initialSamplingNum:readCountArray[i,0],:,i],axis=0, dtype = 'i')
-                            sensor_offset_Indiv[0,:,i] = np.mean(sensor_data_history_Indiv[5:readCountArray[i,1],:,i],axis=0, dtype = 'i')
-                            sensor_offsetObtained = True
-
-                    #if the data overflows
-                    if readCountArray[SensorNum-1,0] > sensor_data_history_Fast.shape[0]-1:
-                        print("OverFlow")
-                        sensor_data_history_Fast = np.append(sensor_data_history_Fast, np.zeros((init_BufferSize,num_sensors_1, SensorNum), dtype = 'i'), axis = 0 )
-
-                    if readCountArray[SensorNum-1,1] > sensor_data_history_Indiv.shape[0]-1:
-                        sensor_data_history_Indiv = np.append(sensor_data_history_Indiv, np.zeros((init_BufferSize,num_sensors_2, SensorNum), dtype = 'i'), axis = 0 )
-
-
-                ###############################################3
-
-            ts.sendChar("i")
+            #Read rest of the data
+            tempSampledData = ts.readRestData()       
 
             if IsTwoModeMerged:
+                #Fast Mode
+                sensor_data_history_Fast[readCountArray[thisSensorIdx,0], :, thisSensorIdx] = tempSampledData[0,sensorIndexInData_1] - sensor_offset_Fast[0,:,thisSensorIdx]
+                readCountArray[thisSensorIdx,0] += 1
 
-                sensor_data_history_Fast = sensor_data_history_Fast[0:readCountArray[SensorNum-1,0], :, :]
-                sensor_data_history_Indiv = sensor_data_history_Indiv[0:readCountArray[SensorNum-1,1], :, :]
+                # Indiv Mode
+                groupIndex = int(ts.groupIndex)
 
+                sensor_data_history_Indiv[readCountArray[thisSensorIdx,1], groupIndex*int(num_sensors_1):(groupIndex+1)*int(num_sensors_1), thisSensorIdx]= tempSampledData[0,sensorIndexInData_2]
+                if groupIndex == groupIndexMax:
+                    sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] = sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] - sensor_offset_Indiv[0,:,thisSensorIdx]
+                    readCountArray[thisSensorIdx,1] += 1
 
-            
-            ts.closePort()
-            
+                if sensor_offsetObtained and thisSensorIdx == SensorNum-1:
+                    #Make the Fast Message
+                    msg_Fast.sns_1_Fast = sensor_data_history_Fast[readCountArray[0,0]-1,:,0]
+                    if SensorNum >= 2:
+                        msg_Fast.sns_2_Fast = sensor_data_history_Fast[readCountArray[1,0]-1,:,1]
+                        if SensorNum==3:
+                            msg_Fast.sns_3_Fast = sensor_data_history_Fast[readCountArray[2,0]-1,:,2]
+                    pub_Fast.publish(msg_Fast)
 
-            
-            if plotShow:
-                #%% Plot the data
+                    # Make the Indiv Message
+                    if groupIndex == groupIndexMax:
+                        #Make the Fast Message
+                        msg_Indiv.sns_1_Indiv = sensor_data_history_Indiv[readCountArray[0,1]-1,:,0]
+                        if SensorNum >= 2:
+                            msg_Indiv.sns_2_Indiv = sensor_data_history_Indiv[readCountArray[1,1]-1,:,1]
+                            if SensorNum==3:
+                                msg_Indiv.sns_3_Indiv = sensor_data_history_Indiv[readCountArray[2,1]-1,:,2]
 
-                fig, axs = plt.subplots(SensorNum)
-                axs[0].set_title('Fast Mode')
-                for i in range(0,SensorNum):
-                    axs[i].plot(sensor_data_history_Fast[:,:,i])
+                        pub_Indiv.publish(msg_Indiv)
 
-                fig1, axs1 = plt.subplots(SensorNum)
-                axs1[0].set_title('Indiv Mode')
-                for i in range(0,SensorNum):
-                    axs1[i].plot(sensor_data_history_Indiv[:,:,i])
+                # Obtain Offset from initial few samples
+                if not sensor_offsetObtained and  readCountArray[SensorNum-1,1] == initialSamplingNum:
+                    for i in range(0,SensorNum):
+                        sensor_offset_Fast[0,:,i] = np.mean(sensor_data_history_Fast[readCountArray[i,0]-initialSamplingNum:readCountArray[i,0],:,i],axis=0, dtype = 'i')
+                        sensor_offset_Indiv[0,:,i] = np.mean(sensor_data_history_Indiv[5:readCountArray[i,1],:,i],axis=0, dtype = 'i')
+                        sensor_offsetObtained = True
 
+                #if the data overflows
+                if readCountArray[SensorNum-1,0] > sensor_data_history_Fast.shape[0]-1:
+                    print("OverFlow")
+                    sensor_data_history_Fast = np.append(sensor_data_history_Fast, np.zeros((init_BufferSize,num_sensors_1, SensorNum), dtype = 'i'), axis = 0 )
 
-                plt.show()
-                
+                if readCountArray[SensorNum-1,1] > sensor_data_history_Indiv.shape[0]-1:
+                    sensor_data_history_Indiv = np.append(sensor_data_history_Indiv, np.zeros((init_BufferSize,num_sensors_2, SensorNum), dtype = 'i'), axis = 0 )
 
-
-            #%% Save Output
-            
-            
-#            directory = ResultSavingDirectory +'/' + currDateOnlyString
-#            if not os.path.exists(directory):
-#            	os.makedirs(directory)
-#
-#            
-#            output_file = directory + '/'+ 'result_' +currDateTimeString + SavingFileName + '.mat'
-#            	
-#            # # currDateString = datetime.datetime.now().strftime("%y%m%d_%H%M%S_")
-#            # output_file = ResultSavingDirectory + '/'+ 'result_' +currDateString + SavingFileName + '.csv'
-#            
-#
-#            # Save as .mat file
-#            savemat(output_file, 
-#                {'sensor_data_history_Fast':sensor_data_history_Fast,
-#                 'sensor_data_history_Indiv':sensor_data_history_Indiv,
-#                  'sensingMode' : sensingMode,                  
-#                  })
-#
-#            # np.savetxt(output_file, sensor_1_data_history_second, delimiter=",")
-#            print("file Saved")
-
-            CMD_in = NO_CMD
-            currState = IDLE
-
-
-
-
-
-
+        elif (state == SHUTDOWN_SENSOR):
+            global is_setup
+            if is_setup:
+                ts.sendChar("i")
+                if IsTwoModeMerged:
+                    sensor_data_history_Fast = sensor_data_history_Fast[0:readCountArray[SensorNum-1,0], :, :]
+                    sensor_data_history_Indiv = sensor_data_history_Indiv[0:readCountArray[SensorNum-1,1], :, :]    
+                ts.closePort()
+                print("Sensor shut down")
+                is_setup = False
+            state = IDLE    
 
                 
 if __name__ == '__main__':
     try:
-        print("Started!")
-        mainLoop()
+        psoc_pub_sub()
     except rospy.ROSInterruptException: pass
-
-
-
-
-
-
-
-

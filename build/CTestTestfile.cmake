@@ -5,6 +5,7 @@
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("gtest")
+subdirs("master_state_machine")
 subdirs("robotiq/robotiq")
 subdirs("robotiq/robotiq_2f_140_gripper_visualization")
 subdirs("robotiq/robotiq_2f_85_gripper_visualization")

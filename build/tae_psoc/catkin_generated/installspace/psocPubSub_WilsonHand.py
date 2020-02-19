@@ -97,7 +97,6 @@ def mainLoop(savingFileName):
     SensorNum = 3
     SensorAddress = np.array([8, 9, 10])
 
-
     MODE_ONE_PAD = 0 
     MODE_FOUR_PAD = 1
     MODE_NINE_PAD = 2
@@ -109,18 +108,11 @@ def mainLoop(savingFileName):
     MODE_FOUR_AND_INDIV = 35; # 250
     MODE_TORSION_AND_INDIV = 36; #0X24
 
-
-
-
     #################################3# Sensing MODE Select@!!!1 @#####################################
     # sensingMode = MODE_FOUR_AND_INDIV
     sensingMode = MODE_TORSION_AND_INDIV
 
-
     slopeCompensateOn = True
-
-
-
 
     IsTwoModeMerged = False
     if sensingMode == MODE_ONE_PAD:
@@ -252,26 +244,16 @@ def mainLoop(savingFileName):
 
 
             #%%
-
             tic = time.time()
-
             stopCMDsent = False
-
-
             snsIndex = 0   
-
-
-
 
             #Start Streaming
             ts.sendChar("s")
 
             currDateOnlyString = datetime.datetime.now().strftime("%y%m%d")
 
-            
-            
             # Loop for getting sensor readings
-
             while not CMD_in == IDLE_CMD:
 
                 #while ord(ts.ser.read(1)) != ts.STX:
@@ -301,11 +283,7 @@ def mainLoop(savingFileName):
                         sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] = sensor_data_history_Indiv[readCountArray[thisSensorIdx,1],:,thisSensorIdx] - sensor_offset_Indiv[0,:,thisSensorIdx]
                         readCountArray[thisSensorIdx,1] += 1
 
-
-
-
                     if sensor_offsetObtained and thisSensorIdx == SensorNum-1:
-
                         #Make the Fast Message
                         msg_Fast.sns_1_Fast = sensor_data_history_Fast[readCountArray[0,0]-1,:,0]
                         if SensorNum >= 2:
@@ -313,7 +291,6 @@ def mainLoop(savingFileName):
                             if SensorNum==3:
                                 msg_Fast.sns_3_Fast = sensor_data_history_Fast[readCountArray[2,0]-1,:,2]
                         pub_Fast.publish(msg_Fast)
-
 
                         # Make the Indiv Message
                         if groupIndex == groupIndexMax:
@@ -326,16 +303,12 @@ def mainLoop(savingFileName):
 
                             pub_Indiv.publish(msg_Indiv)
 
-
                     # Obtain Offset from initial few samples
                     if not sensor_offsetObtained and  readCountArray[SensorNum-1,1] == initialSamplingNum:
                         for i in range(0,SensorNum):
                             sensor_offset_Fast[0,:,i] = np.mean(sensor_data_history_Fast[readCountArray[i,0]-initialSamplingNum:readCountArray[i,0],:,i],axis=0, dtype = 'i')
                             sensor_offset_Indiv[0,:,i] = np.mean(sensor_data_history_Indiv[5:readCountArray[i,1],:,i],axis=0, dtype = 'i')
-
                             sensor_offsetObtained = True
-
-
 
                     #if the data overflows
                     if readCountArray[SensorNum-1,0] > sensor_data_history_Fast.shape[0]-1:
