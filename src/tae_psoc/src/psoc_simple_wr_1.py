@@ -112,8 +112,6 @@ def psoc_pub_sub():
     SensorNum = 3
     SensorAddress = np.array([8, 9, 10])
 
-
-    #%% We loop
     while not rospy.is_shutdown():
         if (state == SETUP_SENSOR):
             # Set sensor mode
@@ -169,7 +167,7 @@ def psoc_pub_sub():
             # Get Initial samples for measuring Offset Values    
             initialSamplingNum = 16 # it should be an even number
             
-            #%% Buffer
+            # Buffer
             init_BufferSize = 5000;
 
             sensor_data_history_Fast = np.zeros((init_BufferSize,num_sensors_1, SensorNum), dtype = 'i')
@@ -179,12 +177,7 @@ def psoc_pub_sub():
             sensor_offset_Indiv = np.zeros((1, num_sensors_2, SensorNum), dtype = 'i')
 
             readCountArray = np.zeros((SensorNum, 2), dtype = 'i') # 2 is for Fast , Indiv Mode.
-            sensor_offsetObtained = False
-
-            #%%
-#            tic = time.time()
-#            stopCMDsent = False
-#            snsIndex = 0   
+            sensor_offsetObtained = False 
 
             #Start Streaming
             ts.sendChar("s")

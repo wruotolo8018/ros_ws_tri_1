@@ -16,14 +16,10 @@ def motor_talker():
         cmd_string = raw_input('Input: ')
         if (cmd_string == ' '):
             cmd_string = "505050505050505050"
-        elif (cmd_string == '1'):
-            cmd_string = "111111111111111111"
-        elif (cmd_string == "r"):
-            cmd_string = "read_all"
-        elif(cmd_string == "9"):
-            cmd_string = "999999999999999999"
-        elif(cmd_string == "s"):
-            cmd_string = "read_sensors"
+        elif (cmd_string == 'c'):
+            cmd_string = "505050505040505050"
+        elif (cmd_string == 'o'):
+            cmd_string = "505050505060505050"
         print(cmd_string)
         pub.publish(cmd_string)
         rate.sleep()

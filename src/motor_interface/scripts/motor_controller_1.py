@@ -57,6 +57,11 @@ def manual_callback(data):
     global manual_motor_string
     manual_motor_string = incomingString
     print("Incoming manual command: " + incomingString)
+    com.write(manual_motor_string)
+#    time.sleep(.5)
+#    read_string = com.read_all()
+#    print("From arduino:")
+#    print(read_string)
     
 # Main loop
 def motor_controller():
@@ -80,7 +85,8 @@ def motor_controller():
     while not rospy.is_shutdown():  
         # Internal state machine
         if (state == MANUAL_INPUT): 
-            com.write(manual_motor_string)
+            x = 1
+#            com.write(manual_motor_string)
         if (state == DRIVE_HAND):
             # Map sensor vectors to motor commands
             pwmArray = np.zeros(9)
@@ -98,13 +104,13 @@ def motor_controller():
             sns2_avg_r = np.average(sensor_2_vector[2:3])
             sns2_avg_l = np.average(sensor_2_vector[1:2])
             if (sns2_avg_l > sns2_avg_r):
-                pwmArray[3] = 50 #arduino_map(sns2_avg_l, 0, 2048, 50, 75)
-                pwmArray[4] = arduino_map(sns2_avg_l, 0, 2048, 50, 75)
-                pwmArray[5] = 50 #arduino_map(sns2_avg_l, 0, 2048, 50, 0)
+                pwmArray[3] = arduino_map(sns2_avg_l, 0, 2048, 50, 75)
+                pwmArray[4] = 50 #arduino_map(sns2_avg_l, 0, 2048, 50, 75)
+                pwmArray[5] = arduino_map(sns2_avg_l, 0, 2048, 50, 0)
             else:
-                pwmArray[3] = 50 #arduino_map(sns2_avg_r, 0, 2048, 50, 0)
-                pwmArray[4] = arduino_map(sns2_avg_r, 0, 2048, 50, 0)
-                pwmArray[5] = 50 #arduino_map(sns2_avg_r, 0, 2048, 50, 75)
+                pwmArray[3] = arduino_map(sns2_avg_r, 0, 2048, 50, 0)
+                pwmArray[4] = 50 #arduino_map(sns2_avg_r, 0, 2048, 50, 0)
+                pwmArray[5] = arduino_map(sns2_avg_r, 0, 2048, 50, 75)
                 
             sns3_avg_r = np.average(sensor_3_vector[2:3])
             sns3_avg_l = np.average(sensor_3_vector[1:2])

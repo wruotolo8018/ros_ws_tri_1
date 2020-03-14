@@ -16,23 +16,38 @@ void stopAll();
 void setup() {
   // Setup all the pwm pins according to current configuration
   pwmArray[1] = 10;   pwmArray[2] = 11;   pwmArray[3] = 9 ;
-  pwmArray[4] = 8 ;   pwmArray[11] = 6 ;   pwmArray[10] = 7 ;
-  pwmArray[7] = 13;   pwmArray[8] = 12;   pwmArray[9] = 4 ;
-  pwmArray[6]= 5 ;   pwmArray[5]= 2 ;   pwmArray[12]= 3 ;
+  pwmArray[7] = 13;   pwmArray[8] = 12;   pwmArray[9]= 2 ;
+
+  
+  pwmArray[4] = 8 ;   pwmArray[5]  = 6 ;   pwmArray[6] = 7 ;
+  pwmArray[10]= 5 ;   pwmArray[11] = 4 ;   pwmArray[12]= 3 ;
 
   // Setup all the digital direction setting pins according to current configuration  
+  for (int i = 22; i<53; i++) {
+    pinMode(i, OUTPUT);
+  }
+  
+  // Finger 1
   digArray1[1]  = 50;   digArray2[1]  = 48;
   digArray1[2]  = 46;   digArray2[2]  = 44;
   digArray1[3]  = 51;   digArray2[3]  = 49;  
-  digArray1[4]  = 47;   digArray2[4]  = 45;  // no forward
-  digArray1[11]  = 25;   digArray2[11]  = 27;
-  digArray1[10]  = 31;   digArray2[10]  = 29;
+  // Thumb
   digArray1[7]  = 42;   digArray2[7]  = 40;  
   digArray1[8]  = 38;   digArray2[8]  = 36;
-  digArray1[9]  = 22;   digArray2[9]  = 23;  // no backward
-  digArray1[6] = 24;   digArray2[6] = 26;  
-  digArray1[5] = 28;   digArray2[5] = 30;
-  digArray1[12] = 34;   digArray2[12] = 32;  // no backward
+  digArray1[9]  = 28;   digArray2[9]  = 30;
+  
+  // Finger 2
+  digArray1[4]  = 47;   digArray2[4]  = 45;
+  digArray1[5]  = 25;   digArray2[5]  = 27;
+  digArray1[6]  = 31;   digArray2[6]  = 29; 
+
+//  digArray1[4]  = 47;   digArray2[4]  = 45;  
+//  digArray1[5]  = 25;   digArray2[5]  = 27;
+//  digArray1[6]  = 31;   digArray2[6]  = 29; 
+//  
+//  digArray1[10] = 24;   digArray2[10] = 26;
+//  digArray1[11] = 22;   digArray2[11] = 23;  
+//  digArray1[12] = 34;   digArray2[12] = 32; 
 
   // Start serial comms going at a chosen baud rate
   Serial.begin(115200);
@@ -92,6 +107,16 @@ void loop() {
           runMotor(i,0,0);
         }
       }
+
+//      Serial.print("\nMotor values: ");
+//      for (int i = 1; i <= 9; i++) {
+//        Serial.print(pwmValArray[i]);
+//        Serial.print(":");
+//        Serial.print(pwmDirArray[i]);
+//        Serial.print("  ");
+//      }
+//      Serial.print("\n");
+      
       while (Serial.available() > 0) {
           Serial.read();  
       }
