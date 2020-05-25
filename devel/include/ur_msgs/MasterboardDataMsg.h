@@ -136,6 +136,35 @@ ros::message_operations::Printer< ::ur_msgs::MasterboardDataMsg_<ContainerAlloca
 return s;
 }
 
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const ::ur_msgs::MasterboardDataMsg_<ContainerAllocator1> & lhs, const ::ur_msgs::MasterboardDataMsg_<ContainerAllocator2> & rhs)
+{
+  return lhs.digital_input_bits == rhs.digital_input_bits &&
+    lhs.digital_output_bits == rhs.digital_output_bits &&
+    lhs.analog_input_range0 == rhs.analog_input_range0 &&
+    lhs.analog_input_range1 == rhs.analog_input_range1 &&
+    lhs.analog_input0 == rhs.analog_input0 &&
+    lhs.analog_input1 == rhs.analog_input1 &&
+    lhs.analog_output_domain0 == rhs.analog_output_domain0 &&
+    lhs.analog_output_domain1 == rhs.analog_output_domain1 &&
+    lhs.analog_output0 == rhs.analog_output0 &&
+    lhs.analog_output1 == rhs.analog_output1 &&
+    lhs.masterboard_temperature == rhs.masterboard_temperature &&
+    lhs.robot_voltage_48V == rhs.robot_voltage_48V &&
+    lhs.robot_current == rhs.robot_current &&
+    lhs.master_io_current == rhs.master_io_current &&
+    lhs.master_safety_state == rhs.master_safety_state &&
+    lhs.master_onoff_state == rhs.master_onoff_state;
+}
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const ::ur_msgs::MasterboardDataMsg_<ContainerAllocator1> & lhs, const ::ur_msgs::MasterboardDataMsg_<ContainerAllocator2> & rhs)
+{
+  return !(lhs == rhs);
+}
+
+
 } // namespace ur_msgs
 
 namespace ros
@@ -143,12 +172,6 @@ namespace ros
 namespace message_traits
 {
 
-
-
-// BOOLTRAITS {'IsFixedSize': True, 'IsMessage': True, 'HasHeader': False}
-// {'std_msgs': ['/opt/ros/melodic/share/std_msgs/cmake/../msg'], 'ur_msgs': ['/home/wilson/ros_ws_1/src/universal_robot/ur_msgs/msg']}
-
-// !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
 
 

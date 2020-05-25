@@ -57,8 +57,8 @@ struct DataType< ::robotiq_ft_sensor::sensor_accessor > {
 };
 
 
-// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessorRequest> should match 
-// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessor > 
+// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessorRequest> should match
+// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessor >
 template<>
 struct MD5Sum< ::robotiq_ft_sensor::sensor_accessorRequest>
 {
@@ -72,8 +72,8 @@ struct MD5Sum< ::robotiq_ft_sensor::sensor_accessorRequest>
   }
 };
 
-// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessorRequest> should match 
-// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessor > 
+// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessorRequest> should match
+// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessor >
 template<>
 struct DataType< ::robotiq_ft_sensor::sensor_accessorRequest>
 {
@@ -87,8 +87,8 @@ struct DataType< ::robotiq_ft_sensor::sensor_accessorRequest>
   }
 };
 
-// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessorResponse> should match 
-// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessor > 
+// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessorResponse> should match
+// service_traits::MD5Sum< ::robotiq_ft_sensor::sensor_accessor >
 template<>
 struct MD5Sum< ::robotiq_ft_sensor::sensor_accessorResponse>
 {
@@ -102,8 +102,8 @@ struct MD5Sum< ::robotiq_ft_sensor::sensor_accessorResponse>
   }
 };
 
-// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessorResponse> should match 
-// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessor > 
+// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessorResponse> should match
+// service_traits::DataType< ::robotiq_ft_sensor::sensor_accessor >
 template<>
 struct DataType< ::robotiq_ft_sensor::sensor_accessorResponse>
 {

@@ -94,33 +94,33 @@ def motor_controller():
             sns1_avg_l = np.average(sensor_1_vector[1:2])
             if (sns1_avg_l > sns1_avg_r):
                 pwmArray[0] = arduino_map(sns1_avg_l, 0, 2048, 50, 75)
-                pwmArray[1] = 50 #arduino_map(sns1_avg_l, 0, 2048, 50, 75)
+                pwmArray[1] = arduino_map(sns1_avg_l, 0, 2048, 50, 75)
                 pwmArray[2] = arduino_map(sns1_avg_l, 0, 2048, 50, 0)
             else:
                 pwmArray[0] = arduino_map(sns1_avg_r, 0, 2048, 50, 0)
-                pwmArray[1] = 50 #arduino_map(sns1_avg_r, 0, 2048, 50, 0)
+                pwmArray[1] = arduino_map(sns1_avg_r, 0, 2048, 50, 0)
                 pwmArray[2] = arduino_map(sns1_avg_r, 0, 2048, 50, 75)
                 
             sns2_avg_r = np.average(sensor_2_vector[2:3])
             sns2_avg_l = np.average(sensor_2_vector[1:2])
             if (sns2_avg_l > sns2_avg_r):
                 pwmArray[3] = arduino_map(sns2_avg_l, 0, 2048, 50, 75)
-                pwmArray[4] = 50 #arduino_map(sns2_avg_l, 0, 2048, 50, 75)
+                pwmArray[4] = arduino_map(sns2_avg_l, 0, 2048, 50, 75)
                 pwmArray[5] = arduino_map(sns2_avg_l, 0, 2048, 50, 0)
             else:
                 pwmArray[3] = arduino_map(sns2_avg_r, 0, 2048, 50, 0)
-                pwmArray[4] = 50 #arduino_map(sns2_avg_r, 0, 2048, 50, 0)
+                pwmArray[4] = arduino_map(sns2_avg_r, 0, 2048, 50, 0)
                 pwmArray[5] = arduino_map(sns2_avg_r, 0, 2048, 50, 75)
                 
             sns3_avg_r = np.average(sensor_3_vector[2:3])
             sns3_avg_l = np.average(sensor_3_vector[1:2])
             if (sns3_avg_l > sns3_avg_r):
                 pwmArray[6] = arduino_map(sns3_avg_l, 0, 2048, 50, 75)
-                pwmArray[7] = 50 #arduino_map(sns3_avg_l, 0, 2048, 50, 75)
+                pwmArray[7] = arduino_map(sns3_avg_l, 0, 2048, 50, 75)
                 pwmArray[8] = arduino_map(sns3_avg_l, 0, 2048, 50, 0)
             else:
                 pwmArray[6] = arduino_map(sns3_avg_r, 0, 2048, 50, 0)
-                pwmArray[7] = 50 #arduino_map(sns3_avg_r, 0, 2048, 50, 0)
+                pwmArray[7] = arduino_map(sns3_avg_r, 0, 2048, 50, 0)
                 pwmArray[8] = arduino_map(sns3_avg_r, 0, 2048, 50, 75)
             
             drive_motor_string = ""

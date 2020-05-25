@@ -263,6 +263,8 @@ cstdio
 -
 map
 -
+mutex
+-
 string
 -
 vector
@@ -286,10 +288,6 @@ controller_manager_msgs/LoadController.h
 controller_manager_msgs/UnloadController.h
 -
 controller_manager_msgs/SwitchController.h
--
-boost/thread/condition.hpp
--
-boost/thread/recursive_mutex.hpp
 -
 controller_manager/controller_loader_interface.h
 -
@@ -954,8 +952,6 @@ map
 string
 -
 vector
--
-boost/ptr_container/ptr_vector.hpp
 -
 ros/console.h
 -

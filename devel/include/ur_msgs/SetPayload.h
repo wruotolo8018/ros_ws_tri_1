@@ -57,8 +57,8 @@ struct DataType< ::ur_msgs::SetPayload > {
 };
 
 
-// service_traits::MD5Sum< ::ur_msgs::SetPayloadRequest> should match 
-// service_traits::MD5Sum< ::ur_msgs::SetPayload > 
+// service_traits::MD5Sum< ::ur_msgs::SetPayloadRequest> should match
+// service_traits::MD5Sum< ::ur_msgs::SetPayload >
 template<>
 struct MD5Sum< ::ur_msgs::SetPayloadRequest>
 {
@@ -72,8 +72,8 @@ struct MD5Sum< ::ur_msgs::SetPayloadRequest>
   }
 };
 
-// service_traits::DataType< ::ur_msgs::SetPayloadRequest> should match 
-// service_traits::DataType< ::ur_msgs::SetPayload > 
+// service_traits::DataType< ::ur_msgs::SetPayloadRequest> should match
+// service_traits::DataType< ::ur_msgs::SetPayload >
 template<>
 struct DataType< ::ur_msgs::SetPayloadRequest>
 {
@@ -87,8 +87,8 @@ struct DataType< ::ur_msgs::SetPayloadRequest>
   }
 };
 
-// service_traits::MD5Sum< ::ur_msgs::SetPayloadResponse> should match 
-// service_traits::MD5Sum< ::ur_msgs::SetPayload > 
+// service_traits::MD5Sum< ::ur_msgs::SetPayloadResponse> should match
+// service_traits::MD5Sum< ::ur_msgs::SetPayload >
 template<>
 struct MD5Sum< ::ur_msgs::SetPayloadResponse>
 {
@@ -102,8 +102,8 @@ struct MD5Sum< ::ur_msgs::SetPayloadResponse>
   }
 };
 
-// service_traits::DataType< ::ur_msgs::SetPayloadResponse> should match 
-// service_traits::DataType< ::ur_msgs::SetPayload > 
+// service_traits::DataType< ::ur_msgs::SetPayloadResponse> should match
+// service_traits::DataType< ::ur_msgs::SetPayload >
 template<>
 struct DataType< ::ur_msgs::SetPayloadResponse>
 {

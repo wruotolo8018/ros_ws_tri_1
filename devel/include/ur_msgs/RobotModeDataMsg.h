@@ -96,6 +96,27 @@ ros::message_operations::Printer< ::ur_msgs::RobotModeDataMsg_<ContainerAllocato
 return s;
 }
 
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const ::ur_msgs::RobotModeDataMsg_<ContainerAllocator1> & lhs, const ::ur_msgs::RobotModeDataMsg_<ContainerAllocator2> & rhs)
+{
+  return lhs.timestamp == rhs.timestamp &&
+    lhs.is_robot_connected == rhs.is_robot_connected &&
+    lhs.is_real_robot_enabled == rhs.is_real_robot_enabled &&
+    lhs.is_power_on_robot == rhs.is_power_on_robot &&
+    lhs.is_emergency_stopped == rhs.is_emergency_stopped &&
+    lhs.is_protective_stopped == rhs.is_protective_stopped &&
+    lhs.is_program_running == rhs.is_program_running &&
+    lhs.is_program_paused == rhs.is_program_paused;
+}
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const ::ur_msgs::RobotModeDataMsg_<ContainerAllocator1> & lhs, const ::ur_msgs::RobotModeDataMsg_<ContainerAllocator2> & rhs)
+{
+  return !(lhs == rhs);
+}
+
+
 } // namespace ur_msgs
 
 namespace ros
@@ -103,12 +124,6 @@ namespace ros
 namespace message_traits
 {
 
-
-
-// BOOLTRAITS {'IsFixedSize': True, 'IsMessage': True, 'HasHeader': False}
-// {'std_msgs': ['/opt/ros/melodic/share/std_msgs/cmake/../msg'], 'ur_msgs': ['/home/wilson/ros_ws_1/src/universal_robot/ur_msgs/msg']}
-
-// !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
 
 

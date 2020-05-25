@@ -12,6 +12,8 @@ int digArray2[13];
 // Function prototypes
 void runMotor(int motorSelect, int dir, int pwmVal);
 void stopAll();
+void closeSequence();
+void openSequence();
 
 void setup() {
   // Setup all the pwm pins according to current configuration
@@ -75,14 +77,14 @@ void loop() {
       Serial.println("Setting direction to backward");
     }
     else if (inChar == 'c'){
-//      digitalWrite(31, HIGH);
-//      digitalWrite(29, LOW);
-      runMotor(4, 1, 50);
+      Serial.println("Closing Hand");
+      closeSequence();
     }
-    else if (inChar == 'v'){
-//      digitalWrite(31, LOW);
-//      digitalWrite(29, HIGH);
-      runMotor(4,0,50);
+    else if (inChar == 'o'){
+      Serial.println("Opening Hand");
+      openSequence();
+    }
+    else if (inChar == 'g'){
     }
     else{
       int motorNum = inChar - '0';
@@ -97,6 +99,29 @@ void loop() {
   
 }
 
+void closeSequence(){
+  runMotor(1, 1, 50);
+  runMotor(2, 1, 50);
+  runMotor(3, 0, 50);
+  runMotor(4, 1, 50);
+  runMotor(5, 1, 50);
+  runMotor(6, 0, 50);
+  runMotor(7, 1, 50);
+  runMotor(8, 1, 50);
+  runMotor(9, 0, 50);
+}
+
+void openSequence(){
+  runMotor(1, 0, 50);
+  runMotor(2, 0, 50);
+  runMotor(3, 1, 50);
+  runMotor(4, 0, 50);
+  runMotor(5, 0, 50);
+  runMotor(6, 1, 50);
+  runMotor(7, 0, 50);
+  runMotor(8, 0, 50);
+  runMotor(9, 1, 50);
+}
 void runMotor(int motorSelect, int dir, int pwmVal) {
   analogWrite(pwmArray[motorSelect], pwmVal);
   if (dir == 0) {

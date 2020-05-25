@@ -166,6 +166,41 @@ ros::message_operations::Printer< ::robotiq_3f_gripper_articulated_msgs::Robotiq
 return s;
 }
 
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotInput_<ContainerAllocator1> & lhs, const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotInput_<ContainerAllocator2> & rhs)
+{
+  return lhs.gACT == rhs.gACT &&
+    lhs.gMOD == rhs.gMOD &&
+    lhs.gGTO == rhs.gGTO &&
+    lhs.gIMC == rhs.gIMC &&
+    lhs.gSTA == rhs.gSTA &&
+    lhs.gDTA == rhs.gDTA &&
+    lhs.gDTB == rhs.gDTB &&
+    lhs.gDTC == rhs.gDTC &&
+    lhs.gDTS == rhs.gDTS &&
+    lhs.gFLT == rhs.gFLT &&
+    lhs.gPRA == rhs.gPRA &&
+    lhs.gPOA == rhs.gPOA &&
+    lhs.gCUA == rhs.gCUA &&
+    lhs.gPRB == rhs.gPRB &&
+    lhs.gPOB == rhs.gPOB &&
+    lhs.gCUB == rhs.gCUB &&
+    lhs.gPRC == rhs.gPRC &&
+    lhs.gPOC == rhs.gPOC &&
+    lhs.gCUC == rhs.gCUC &&
+    lhs.gPRS == rhs.gPRS &&
+    lhs.gPOS == rhs.gPOS &&
+    lhs.gCUS == rhs.gCUS;
+}
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotInput_<ContainerAllocator1> & lhs, const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotInput_<ContainerAllocator2> & rhs)
+{
+  return !(lhs == rhs);
+}
+
+
 } // namespace robotiq_3f_gripper_articulated_msgs
 
 namespace ros
@@ -173,12 +208,6 @@ namespace ros
 namespace message_traits
 {
 
-
-
-// BOOLTRAITS {'IsFixedSize': True, 'IsMessage': True, 'HasHeader': False}
-// {'robotiq_3f_gripper_articulated_msgs': ['/home/wilson/ros_ws_1/src/robotiq/robotiq_3f_gripper_articulated_msgs/msg'], 'std_msgs': ['/opt/ros/melodic/share/std_msgs/cmake/../msg']}
-
-// !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
 
 

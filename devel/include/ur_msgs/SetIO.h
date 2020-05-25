@@ -57,8 +57,8 @@ struct DataType< ::ur_msgs::SetIO > {
 };
 
 
-// service_traits::MD5Sum< ::ur_msgs::SetIORequest> should match 
-// service_traits::MD5Sum< ::ur_msgs::SetIO > 
+// service_traits::MD5Sum< ::ur_msgs::SetIORequest> should match
+// service_traits::MD5Sum< ::ur_msgs::SetIO >
 template<>
 struct MD5Sum< ::ur_msgs::SetIORequest>
 {
@@ -72,8 +72,8 @@ struct MD5Sum< ::ur_msgs::SetIORequest>
   }
 };
 
-// service_traits::DataType< ::ur_msgs::SetIORequest> should match 
-// service_traits::DataType< ::ur_msgs::SetIO > 
+// service_traits::DataType< ::ur_msgs::SetIORequest> should match
+// service_traits::DataType< ::ur_msgs::SetIO >
 template<>
 struct DataType< ::ur_msgs::SetIORequest>
 {
@@ -87,8 +87,8 @@ struct DataType< ::ur_msgs::SetIORequest>
   }
 };
 
-// service_traits::MD5Sum< ::ur_msgs::SetIOResponse> should match 
-// service_traits::MD5Sum< ::ur_msgs::SetIO > 
+// service_traits::MD5Sum< ::ur_msgs::SetIOResponse> should match
+// service_traits::MD5Sum< ::ur_msgs::SetIO >
 template<>
 struct MD5Sum< ::ur_msgs::SetIOResponse>
 {
@@ -102,8 +102,8 @@ struct MD5Sum< ::ur_msgs::SetIOResponse>
   }
 };
 
-// service_traits::DataType< ::ur_msgs::SetIOResponse> should match 
-// service_traits::DataType< ::ur_msgs::SetIO > 
+// service_traits::DataType< ::ur_msgs::SetIOResponse> should match
+// service_traits::DataType< ::ur_msgs::SetIO >
 template<>
 struct DataType< ::ur_msgs::SetIOResponse>
 {

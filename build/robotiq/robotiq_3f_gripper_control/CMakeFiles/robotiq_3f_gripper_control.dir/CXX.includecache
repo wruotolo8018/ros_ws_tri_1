@@ -493,8 +493,6 @@ string
 -
 vector
 -
-boost/ptr_container/ptr_vector.hpp
--
 ros/console.h
 -
 hardware_interface/internal/demangle_symbol.h

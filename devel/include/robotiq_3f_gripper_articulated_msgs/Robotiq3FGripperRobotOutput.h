@@ -151,6 +151,38 @@ ros::message_operations::Printer< ::robotiq_3f_gripper_articulated_msgs::Robotiq
 return s;
 }
 
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotOutput_<ContainerAllocator1> & lhs, const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotOutput_<ContainerAllocator2> & rhs)
+{
+  return lhs.rACT == rhs.rACT &&
+    lhs.rMOD == rhs.rMOD &&
+    lhs.rGTO == rhs.rGTO &&
+    lhs.rATR == rhs.rATR &&
+    lhs.rGLV == rhs.rGLV &&
+    lhs.rICF == rhs.rICF &&
+    lhs.rICS == rhs.rICS &&
+    lhs.rPRA == rhs.rPRA &&
+    lhs.rSPA == rhs.rSPA &&
+    lhs.rFRA == rhs.rFRA &&
+    lhs.rPRB == rhs.rPRB &&
+    lhs.rSPB == rhs.rSPB &&
+    lhs.rFRB == rhs.rFRB &&
+    lhs.rPRC == rhs.rPRC &&
+    lhs.rSPC == rhs.rSPC &&
+    lhs.rFRC == rhs.rFRC &&
+    lhs.rPRS == rhs.rPRS &&
+    lhs.rSPS == rhs.rSPS &&
+    lhs.rFRS == rhs.rFRS;
+}
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotOutput_<ContainerAllocator1> & lhs, const ::robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotOutput_<ContainerAllocator2> & rhs)
+{
+  return !(lhs == rhs);
+}
+
+
 } // namespace robotiq_3f_gripper_articulated_msgs
 
 namespace ros
@@ -158,12 +190,6 @@ namespace ros
 namespace message_traits
 {
 
-
-
-// BOOLTRAITS {'IsFixedSize': True, 'IsMessage': True, 'HasHeader': False}
-// {'robotiq_3f_gripper_articulated_msgs': ['/home/wilson/ros_ws_1/src/robotiq/robotiq_3f_gripper_articulated_msgs/msg'], 'std_msgs': ['/opt/ros/melodic/share/std_msgs/cmake/../msg']}
-
-// !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
 
 

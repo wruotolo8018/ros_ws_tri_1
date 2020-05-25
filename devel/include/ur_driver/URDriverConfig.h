@@ -69,7 +69,7 @@ namespace ur_driver
         field(a_f)
       {}
 
-      T (URDriverConfig::* field);
+      T URDriverConfig::* field;
 
       virtual void clamp(URDriverConfig &config, const URDriverConfig &max, const URDriverConfig &min) const
       {
@@ -216,7 +216,7 @@ namespace ur_driver
         }
       }
 
-      T (PT::* field);
+      T PT::* field;
       std::vector<URDriverConfig::AbstractGroupDescriptionConstPtr> groups;
     };
 

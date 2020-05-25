@@ -23,9 +23,6 @@ robotiq/robotiq_2f_gripper_action_server/CMakeFiles/robotiq_2f_gripper_action_se
  /opt/ros/melodic/include/actionlib_msgs/GoalID.h
  /opt/ros/melodic/include/actionlib_msgs/GoalStatus.h
  /opt/ros/melodic/include/actionlib_msgs/GoalStatusArray.h
- /opt/ros/melodic/include/boost_161_condition_variable.h
- /opt/ros/melodic/include/boost_161_pthread_condition_variable.h
- /opt/ros/melodic/include/boost_161_pthread_condition_variable_fwd.h
  /opt/ros/melodic/include/control_msgs/GripperCommand.h
  /opt/ros/melodic/include/control_msgs/GripperCommandAction.h
  /opt/ros/melodic/include/control_msgs/GripperCommandActionFeedback.h

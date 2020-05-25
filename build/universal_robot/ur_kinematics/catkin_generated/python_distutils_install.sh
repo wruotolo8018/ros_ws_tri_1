@@ -9,7 +9,6 @@ if [ -n "$DESTDIR" ] ; then
             /bin/echo "otherwise python's distutils will bork things."
             exit 1
     esac
-    DESTDIR_ARG="--root=$DESTDIR"
 fi
 
 echo_and_run() { echo "+ $@" ; "$@" ; }
@@ -29,5 +28,5 @@ echo_and_run /usr/bin/env \
     "/home/wilson/ros_ws_1/src/universal_robot/ur_kinematics/setup.py" \
     build --build-base "/home/wilson/ros_ws_1/build/universal_robot/ur_kinematics" \
     install \
-    $DESTDIR_ARG \
+    --root="${DESTDIR-/}" \
     --install-layout=deb --prefix="/home/wilson/ros_ws_1/install" --install-scripts="/home/wilson/ros_ws_1/install/bin"

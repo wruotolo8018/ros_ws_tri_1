@@ -69,7 +69,7 @@ namespace robotiq_3f_gripper_control
         field(a_f)
       {}
 
-      T (Robotiq3FGripperConfig::* field);
+      T Robotiq3FGripperConfig::* field;
 
       virtual void clamp(Robotiq3FGripperConfig &config, const Robotiq3FGripperConfig &max, const Robotiq3FGripperConfig &min) const
       {
@@ -216,7 +216,7 @@ namespace robotiq_3f_gripper_control
         }
       }
 
-      T (PT::* field);
+      T PT::* field;
       std::vector<Robotiq3FGripperConfig::AbstractGroupDescriptionConstPtr> groups;
     };
 

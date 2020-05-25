@@ -78,6 +78,23 @@ struct ToolDataMsg_
 
 
 
+// reducing the odds to have name collisions with Windows.h 
+#if defined(_WIN32) && defined(ANALOG_INPUT_RANGE_CURRENT)
+  #undef ANALOG_INPUT_RANGE_CURRENT
+#endif
+#if defined(_WIN32) && defined(ANALOG_INPUT_RANGE_VOLTAGE)
+  #undef ANALOG_INPUT_RANGE_VOLTAGE
+#endif
+#if defined(_WIN32) && defined(TOOL_BOOTLOADER_MODE)
+  #undef TOOL_BOOTLOADER_MODE
+#endif
+#if defined(_WIN32) && defined(TOOL_RUNNING_MODE)
+  #undef TOOL_RUNNING_MODE
+#endif
+#if defined(_WIN32) && defined(TOOL_IDLE_MODE)
+  #undef TOOL_IDLE_MODE
+#endif
+
   enum {
     ANALOG_INPUT_RANGE_CURRENT = 0,
     ANALOG_INPUT_RANGE_VOLTAGE = 1,
@@ -118,6 +135,28 @@ ros::message_operations::Printer< ::ur_msgs::ToolDataMsg_<ContainerAllocator> >:
 return s;
 }
 
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const ::ur_msgs::ToolDataMsg_<ContainerAllocator1> & lhs, const ::ur_msgs::ToolDataMsg_<ContainerAllocator2> & rhs)
+{
+  return lhs.analog_input_range2 == rhs.analog_input_range2 &&
+    lhs.analog_input_range3 == rhs.analog_input_range3 &&
+    lhs.analog_input2 == rhs.analog_input2 &&
+    lhs.analog_input3 == rhs.analog_input3 &&
+    lhs.tool_voltage_48v == rhs.tool_voltage_48v &&
+    lhs.tool_output_voltage == rhs.tool_output_voltage &&
+    lhs.tool_current == rhs.tool_current &&
+    lhs.tool_temperature == rhs.tool_temperature &&
+    lhs.tool_mode == rhs.tool_mode;
+}
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const ::ur_msgs::ToolDataMsg_<ContainerAllocator1> & lhs, const ::ur_msgs::ToolDataMsg_<ContainerAllocator2> & rhs)
+{
+  return !(lhs == rhs);
+}
+
+
 } // namespace ur_msgs
 
 namespace ros
@@ -125,12 +164,6 @@ namespace ros
 namespace message_traits
 {
 
-
-
-// BOOLTRAITS {'IsFixedSize': True, 'IsMessage': True, 'HasHeader': False}
-// {'std_msgs': ['/opt/ros/melodic/share/std_msgs/cmake/../msg'], 'ur_msgs': ['/home/wilson/ros_ws_1/src/universal_robot/ur_msgs/msg']}
-
-// !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
 
 

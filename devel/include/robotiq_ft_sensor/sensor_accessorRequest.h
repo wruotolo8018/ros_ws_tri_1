@@ -43,6 +43,20 @@ struct sensor_accessorRequest_
 
 
 
+// reducing the odds to have name collisions with Windows.h 
+#if defined(_WIN32) && defined(COMMAND_GET_SERIAL_NUMBER)
+  #undef COMMAND_GET_SERIAL_NUMBER
+#endif
+#if defined(_WIN32) && defined(COMMAND_GET_FIRMWARE_VERSION)
+  #undef COMMAND_GET_FIRMWARE_VERSION
+#endif
+#if defined(_WIN32) && defined(COMMAND_GET_PRODUCTION_YEAR)
+  #undef COMMAND_GET_PRODUCTION_YEAR
+#endif
+#if defined(_WIN32) && defined(COMMAND_SET_ZERO)
+  #undef COMMAND_SET_ZERO
+#endif
+
   enum {
     COMMAND_GET_SERIAL_NUMBER = 1u,
     COMMAND_GET_FIRMWARE_VERSION = 2u,
@@ -80,6 +94,21 @@ ros::message_operations::Printer< ::robotiq_ft_sensor::sensor_accessorRequest_<C
 return s;
 }
 
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const ::robotiq_ft_sensor::sensor_accessorRequest_<ContainerAllocator1> & lhs, const ::robotiq_ft_sensor::sensor_accessorRequest_<ContainerAllocator2> & rhs)
+{
+  return lhs.command_id == rhs.command_id &&
+    lhs.command == rhs.command;
+}
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const ::robotiq_ft_sensor::sensor_accessorRequest_<ContainerAllocator1> & lhs, const ::robotiq_ft_sensor::sensor_accessorRequest_<ContainerAllocator2> & rhs)
+{
+  return !(lhs == rhs);
+}
+
+
 } // namespace robotiq_ft_sensor
 
 namespace ros
@@ -87,12 +116,6 @@ namespace ros
 namespace message_traits
 {
 
-
-
-// BOOLTRAITS {'IsFixedSize': False, 'IsMessage': True, 'HasHeader': False}
-// {'std_msgs': ['/opt/ros/melodic/share/std_msgs/cmake/../msg'], 'robotiq_ft_sensor': ['/home/wilson/ros_ws_1/src/robotiq/robotiq_ft_sensor/msg']}
-
-// !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
 
 

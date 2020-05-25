@@ -57,8 +57,8 @@ struct DataType< ::ur_msgs::SetSpeedSliderFraction > {
 };
 
 
-// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFractionRequest> should match 
-// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFraction > 
+// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFractionRequest> should match
+// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFraction >
 template<>
 struct MD5Sum< ::ur_msgs::SetSpeedSliderFractionRequest>
 {
@@ -72,8 +72,8 @@ struct MD5Sum< ::ur_msgs::SetSpeedSliderFractionRequest>
   }
 };
 
-// service_traits::DataType< ::ur_msgs::SetSpeedSliderFractionRequest> should match 
-// service_traits::DataType< ::ur_msgs::SetSpeedSliderFraction > 
+// service_traits::DataType< ::ur_msgs::SetSpeedSliderFractionRequest> should match
+// service_traits::DataType< ::ur_msgs::SetSpeedSliderFraction >
 template<>
 struct DataType< ::ur_msgs::SetSpeedSliderFractionRequest>
 {
@@ -87,8 +87,8 @@ struct DataType< ::ur_msgs::SetSpeedSliderFractionRequest>
   }
 };
 
-// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFractionResponse> should match 
-// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFraction > 
+// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFractionResponse> should match
+// service_traits::MD5Sum< ::ur_msgs::SetSpeedSliderFraction >
 template<>
 struct MD5Sum< ::ur_msgs::SetSpeedSliderFractionResponse>
 {
@@ -102,8 +102,8 @@ struct MD5Sum< ::ur_msgs::SetSpeedSliderFractionResponse>
   }
 };
 
-// service_traits::DataType< ::ur_msgs::SetSpeedSliderFractionResponse> should match 
-// service_traits::DataType< ::ur_msgs::SetSpeedSliderFraction > 
+// service_traits::DataType< ::ur_msgs::SetSpeedSliderFractionResponse> should match
+// service_traits::DataType< ::ur_msgs::SetSpeedSliderFraction >
 template<>
 struct DataType< ::ur_msgs::SetSpeedSliderFractionResponse>
 {

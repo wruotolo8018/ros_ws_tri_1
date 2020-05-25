@@ -48,6 +48,35 @@ struct SetIORequest_
 
 
 
+// reducing the odds to have name collisions with Windows.h 
+#if defined(_WIN32) && defined(FUN_SET_DIGITAL_OUT)
+  #undef FUN_SET_DIGITAL_OUT
+#endif
+#if defined(_WIN32) && defined(FUN_SET_FLAG)
+  #undef FUN_SET_FLAG
+#endif
+#if defined(_WIN32) && defined(FUN_SET_ANALOG_OUT)
+  #undef FUN_SET_ANALOG_OUT
+#endif
+#if defined(_WIN32) && defined(FUN_SET_TOOL_VOLTAGE)
+  #undef FUN_SET_TOOL_VOLTAGE
+#endif
+#if defined(_WIN32) && defined(STATE_OFF)
+  #undef STATE_OFF
+#endif
+#if defined(_WIN32) && defined(STATE_ON)
+  #undef STATE_ON
+#endif
+#if defined(_WIN32) && defined(STATE_TOOL_VOLTAGE_0V)
+  #undef STATE_TOOL_VOLTAGE_0V
+#endif
+#if defined(_WIN32) && defined(STATE_TOOL_VOLTAGE_12V)
+  #undef STATE_TOOL_VOLTAGE_12V
+#endif
+#if defined(_WIN32) && defined(STATE_TOOL_VOLTAGE_24V)
+  #undef STATE_TOOL_VOLTAGE_24V
+#endif
+
   enum {
     FUN_SET_DIGITAL_OUT = 1,
     FUN_SET_FLAG = 2,
@@ -100,6 +129,22 @@ ros::message_operations::Printer< ::ur_msgs::SetIORequest_<ContainerAllocator> >
 return s;
 }
 
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const ::ur_msgs::SetIORequest_<ContainerAllocator1> & lhs, const ::ur_msgs::SetIORequest_<ContainerAllocator2> & rhs)
+{
+  return lhs.fun == rhs.fun &&
+    lhs.pin == rhs.pin &&
+    lhs.state == rhs.state;
+}
+
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const ::ur_msgs::SetIORequest_<ContainerAllocator1> & lhs, const ::ur_msgs::SetIORequest_<ContainerAllocator2> & rhs)
+{
+  return !(lhs == rhs);
+}
+
+
 } // namespace ur_msgs
 
 namespace ros
@@ -107,12 +152,6 @@ namespace ros
 namespace message_traits
 {
 
-
-
-// BOOLTRAITS {'IsFixedSize': True, 'IsMessage': True, 'HasHeader': False}
-// {'std_msgs': ['/opt/ros/melodic/share/std_msgs/cmake/../msg'], 'ur_msgs': ['/home/wilson/ros_ws_1/src/universal_robot/ur_msgs/msg']}
-
-// !!!!!!!!!!! ['__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattribute__', '__hash__', '__init__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_parsed_fields', 'constants', 'fields', 'full_name', 'has_header', 'header_present', 'names', 'package', 'parsed_fields', 'short_name', 'text', 'types']
 
 
 

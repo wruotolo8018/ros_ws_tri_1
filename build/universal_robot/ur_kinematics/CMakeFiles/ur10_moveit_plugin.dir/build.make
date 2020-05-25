@@ -160,7 +160,6 @@ ur10_moveit_plugin_EXTERNAL_OBJECTS =
 /home/wilson/ros_ws_1/devel/lib/libur10_moveit_plugin.so: /opt/ros/melodic/lib/libmessage_filters.so
 /home/wilson/ros_ws_1/devel/lib/libur10_moveit_plugin.so: /opt/ros/melodic/lib/libroscpp.so
 /home/wilson/ros_ws_1/devel/lib/libur10_moveit_plugin.so: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/home/wilson/ros_ws_1/devel/lib/libur10_moveit_plugin.so: /usr/lib/x86_64-linux-gnu/libboost_signals.so
 /home/wilson/ros_ws_1/devel/lib/libur10_moveit_plugin.so: /opt/ros/melodic/lib/libxmlrpcpp.so
 /home/wilson/ros_ws_1/devel/lib/libur10_moveit_plugin.so: /opt/ros/melodic/lib/libtf2.so
 /home/wilson/ros_ws_1/devel/lib/libur10_moveit_plugin.so: /opt/ros/melodic/lib/libroscpp_serialization.so

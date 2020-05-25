@@ -633,6 +633,8 @@ geometry_msgs/Vector3.h
 -
 geometry_msgs/Wrench.h
 -
+ros/macros.h
+-
 
 /opt/ros/melodic/include/kdl_parser/kdl_parser.hpp
 kdl/tree.hpp
@@ -2019,6 +2021,8 @@ Vector3.h
 /opt/ros/melodic/include/tf/LinearMath/Vector3.h
 Quaternion.h
 /opt/ros/melodic/include/tf/LinearMath/Quaternion.h
+ros/macros.h
+-
 
 /opt/ros/melodic/include/tf/LinearMath/MinMax.h
 
@@ -2035,6 +2039,8 @@ Vector3.h
 /opt/ros/melodic/include/tf/LinearMath/Vector3.h
 QuadWord.h
 /opt/ros/melodic/include/tf/LinearMath/QuadWord.h
+ros/macros.h
+-
 
 /opt/ros/melodic/include/tf/LinearMath/Scalar.h
 math.h
@@ -2098,6 +2104,8 @@ kdl/frames.hpp
 geometry_msgs/Pose.h
 -
 geometry_msgs/Twist.h
+-
+ros/macros.h
 -
 
 /opt/ros/melodic/include/trajectory_msgs/JointTrajectory.h
