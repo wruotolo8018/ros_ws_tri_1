@@ -1,6 +1,6 @@
-uint32 prox1
-uint32 dist1
-uint32 prox2
-uint32 dist2
-uint32 prox3
-uint32 dist3
+int32 prox1
+int32 dist1
+int32 prox2
+int32 dist2
+int32 prox3
+int32 dist3

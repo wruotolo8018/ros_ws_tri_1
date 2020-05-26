@@ -89,23 +89,23 @@ class tendon_sns {
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type tendon_sns
     // Serialize message field [prox1]
-    bufferOffset = _serializer.uint32(obj.prox1, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.prox1, buffer, bufferOffset);
     // Serialize message field [dist1]
-    bufferOffset = _serializer.uint32(obj.dist1, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.dist1, buffer, bufferOffset);
     // Serialize message field [hype1]
-    bufferOffset = _serializer.uint32(obj.hype1, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.hype1, buffer, bufferOffset);
     // Serialize message field [prox2]
-    bufferOffset = _serializer.uint32(obj.prox2, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.prox2, buffer, bufferOffset);
     // Serialize message field [dist2]
-    bufferOffset = _serializer.uint32(obj.dist2, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.dist2, buffer, bufferOffset);
     // Serialize message field [hype2]
-    bufferOffset = _serializer.uint32(obj.hype2, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.hype2, buffer, bufferOffset);
     // Serialize message field [prox3]
-    bufferOffset = _serializer.uint32(obj.prox3, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.prox3, buffer, bufferOffset);
     // Serialize message field [dist3]
-    bufferOffset = _serializer.uint32(obj.dist3, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.dist3, buffer, bufferOffset);
     // Serialize message field [hype3]
-    bufferOffset = _serializer.uint32(obj.hype3, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.hype3, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -114,23 +114,23 @@ class tendon_sns {
     let len;
     let data = new tendon_sns(null);
     // Deserialize message field [prox1]
-    data.prox1 = _deserializer.uint32(buffer, bufferOffset);
+    data.prox1 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [dist1]
-    data.dist1 = _deserializer.uint32(buffer, bufferOffset);
+    data.dist1 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [hype1]
-    data.hype1 = _deserializer.uint32(buffer, bufferOffset);
+    data.hype1 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [prox2]
-    data.prox2 = _deserializer.uint32(buffer, bufferOffset);
+    data.prox2 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [dist2]
-    data.dist2 = _deserializer.uint32(buffer, bufferOffset);
+    data.dist2 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [hype2]
-    data.hype2 = _deserializer.uint32(buffer, bufferOffset);
+    data.hype2 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [prox3]
-    data.prox3 = _deserializer.uint32(buffer, bufferOffset);
+    data.prox3 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [dist3]
-    data.dist3 = _deserializer.uint32(buffer, bufferOffset);
+    data.dist3 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [hype3]
-    data.hype3 = _deserializer.uint32(buffer, bufferOffset);
+    data.hype3 = _deserializer.int32(buffer, bufferOffset);
     return data;
   }
 
@@ -145,21 +145,21 @@ class tendon_sns {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '62e9a46c9ccdea164569c283a1055200';
+    return '14b8ac042010c67e52d9cebc316f5c93';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    uint32 prox1
-    uint32 dist1
-    uint32 hype1
-    uint32 prox2
-    uint32 dist2
-    uint32 hype2
-    uint32 prox3
-    uint32 dist3
-    uint32 hype3
+    int32 prox1
+    int32 dist1
+    int32 hype1
+    int32 prox2
+    int32 dist2
+    int32 hype2
+    int32 prox3
+    int32 dist3
+    int32 hype3
     
     `;
   }

@@ -5,7 +5,7 @@
  */
 
 // Setup arrays for motor control pins
-const int num_sensors = 12;
+const int num_sensors = 15;
 int sns_array[num_sensors];
 String output_str;
 
@@ -13,10 +13,7 @@ String output_str;
 int readTendon(int sensorSelect);
 int readJoint(int sensorSelect);
 
-void setup() {
-  // Setup all the analog read pins
-  // need to be set to in?
-  
+void setup() {  
   Serial.begin(115200);
 }
 

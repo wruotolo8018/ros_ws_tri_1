@@ -68,17 +68,17 @@ class joint_sns {
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type joint_sns
     // Serialize message field [prox1]
-    bufferOffset = _serializer.uint32(obj.prox1, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.prox1, buffer, bufferOffset);
     // Serialize message field [dist1]
-    bufferOffset = _serializer.uint32(obj.dist1, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.dist1, buffer, bufferOffset);
     // Serialize message field [prox2]
-    bufferOffset = _serializer.uint32(obj.prox2, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.prox2, buffer, bufferOffset);
     // Serialize message field [dist2]
-    bufferOffset = _serializer.uint32(obj.dist2, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.dist2, buffer, bufferOffset);
     // Serialize message field [prox3]
-    bufferOffset = _serializer.uint32(obj.prox3, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.prox3, buffer, bufferOffset);
     // Serialize message field [dist3]
-    bufferOffset = _serializer.uint32(obj.dist3, buffer, bufferOffset);
+    bufferOffset = _serializer.int32(obj.dist3, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -87,17 +87,17 @@ class joint_sns {
     let len;
     let data = new joint_sns(null);
     // Deserialize message field [prox1]
-    data.prox1 = _deserializer.uint32(buffer, bufferOffset);
+    data.prox1 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [dist1]
-    data.dist1 = _deserializer.uint32(buffer, bufferOffset);
+    data.dist1 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [prox2]
-    data.prox2 = _deserializer.uint32(buffer, bufferOffset);
+    data.prox2 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [dist2]
-    data.dist2 = _deserializer.uint32(buffer, bufferOffset);
+    data.dist2 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [prox3]
-    data.prox3 = _deserializer.uint32(buffer, bufferOffset);
+    data.prox3 = _deserializer.int32(buffer, bufferOffset);
     // Deserialize message field [dist3]
-    data.dist3 = _deserializer.uint32(buffer, bufferOffset);
+    data.dist3 = _deserializer.int32(buffer, bufferOffset);
     return data;
   }
 
@@ -112,18 +112,18 @@ class joint_sns {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '0370817355f4d293f185fcd9ba10ba17';
+    return '8b57bff00d9b97e6f6a22eb31c6895cc';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    uint32 prox1
-    uint32 dist1
-    uint32 prox2
-    uint32 dist2
-    uint32 prox3
-    uint32 dist3
+    int32 prox1
+    int32 dist1
+    int32 prox2
+    int32 dist2
+    int32 prox3
+    int32 dist3
     
     `;
   }

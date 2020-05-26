@@ -43,22 +43,22 @@ struct joint_sns_
 
 
 
-   typedef uint32_t _prox1_type;
+   typedef int32_t _prox1_type;
   _prox1_type prox1;
 
-   typedef uint32_t _dist1_type;
+   typedef int32_t _dist1_type;
   _dist1_type dist1;
 
-   typedef uint32_t _prox2_type;
+   typedef int32_t _prox2_type;
   _prox2_type prox2;
 
-   typedef uint32_t _dist2_type;
+   typedef int32_t _dist2_type;
   _dist2_type dist2;
 
-   typedef uint32_t _prox3_type;
+   typedef int32_t _prox3_type;
   _prox3_type prox3;
 
-   typedef uint32_t _dist3_type;
+   typedef int32_t _dist3_type;
   _dist3_type dist3;
 
 
@@ -152,12 +152,12 @@ struct MD5Sum< ::basic_sensor_interface::joint_sns_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "0370817355f4d293f185fcd9ba10ba17";
+    return "8b57bff00d9b97e6f6a22eb31c6895cc";
   }
 
   static const char* value(const ::basic_sensor_interface::joint_sns_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x0370817355f4d293ULL;
-  static const uint64_t static_value2 = 0xf185fcd9ba10ba17ULL;
+  static const uint64_t static_value1 = 0x8b57bff00d9b97e6ULL;
+  static const uint64_t static_value2 = 0xf6a22eb31c6895ccULL;
 };
 
 template<class ContainerAllocator>
@@ -176,12 +176,12 @@ struct Definition< ::basic_sensor_interface::joint_sns_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "uint32 prox1\n"
-"uint32 dist1\n"
-"uint32 prox2\n"
-"uint32 dist2\n"
-"uint32 prox3\n"
-"uint32 dist3\n"
+    return "int32 prox1\n"
+"int32 dist1\n"
+"int32 prox2\n"
+"int32 dist2\n"
+"int32 prox3\n"
+"int32 dist3\n"
 ;
   }
 
@@ -225,17 +225,17 @@ struct Printer< ::basic_sensor_interface::joint_sns_<ContainerAllocator> >
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::basic_sensor_interface::joint_sns_<ContainerAllocator>& v)
   {
     s << indent << "prox1: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.prox1);
+    Printer<int32_t>::stream(s, indent + "  ", v.prox1);
     s << indent << "dist1: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.dist1);
+    Printer<int32_t>::stream(s, indent + "  ", v.dist1);
     s << indent << "prox2: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.prox2);
+    Printer<int32_t>::stream(s, indent + "  ", v.prox2);
     s << indent << "dist2: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.dist2);
+    Printer<int32_t>::stream(s, indent + "  ", v.dist2);
     s << indent << "prox3: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.prox3);
+    Printer<int32_t>::stream(s, indent + "  ", v.prox3);
     s << indent << "dist3: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.dist3);
+    Printer<int32_t>::stream(s, indent + "  ", v.dist3);
   }
 };
 

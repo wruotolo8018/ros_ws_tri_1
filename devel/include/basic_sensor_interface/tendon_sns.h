@@ -49,31 +49,31 @@ struct tendon_sns_
 
 
 
-   typedef uint32_t _prox1_type;
+   typedef int32_t _prox1_type;
   _prox1_type prox1;
 
-   typedef uint32_t _dist1_type;
+   typedef int32_t _dist1_type;
   _dist1_type dist1;
 
-   typedef uint32_t _hype1_type;
+   typedef int32_t _hype1_type;
   _hype1_type hype1;
 
-   typedef uint32_t _prox2_type;
+   typedef int32_t _prox2_type;
   _prox2_type prox2;
 
-   typedef uint32_t _dist2_type;
+   typedef int32_t _dist2_type;
   _dist2_type dist2;
 
-   typedef uint32_t _hype2_type;
+   typedef int32_t _hype2_type;
   _hype2_type hype2;
 
-   typedef uint32_t _prox3_type;
+   typedef int32_t _prox3_type;
   _prox3_type prox3;
 
-   typedef uint32_t _dist3_type;
+   typedef int32_t _dist3_type;
   _dist3_type dist3;
 
-   typedef uint32_t _hype3_type;
+   typedef int32_t _hype3_type;
   _hype3_type hype3;
 
 
@@ -170,12 +170,12 @@ struct MD5Sum< ::basic_sensor_interface::tendon_sns_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "62e9a46c9ccdea164569c283a1055200";
+    return "14b8ac042010c67e52d9cebc316f5c93";
   }
 
   static const char* value(const ::basic_sensor_interface::tendon_sns_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x62e9a46c9ccdea16ULL;
-  static const uint64_t static_value2 = 0x4569c283a1055200ULL;
+  static const uint64_t static_value1 = 0x14b8ac042010c67eULL;
+  static const uint64_t static_value2 = 0x52d9cebc316f5c93ULL;
 };
 
 template<class ContainerAllocator>
@@ -194,15 +194,15 @@ struct Definition< ::basic_sensor_interface::tendon_sns_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "uint32 prox1\n"
-"uint32 dist1\n"
-"uint32 hype1\n"
-"uint32 prox2\n"
-"uint32 dist2\n"
-"uint32 hype2\n"
-"uint32 prox3\n"
-"uint32 dist3\n"
-"uint32 hype3\n"
+    return "int32 prox1\n"
+"int32 dist1\n"
+"int32 hype1\n"
+"int32 prox2\n"
+"int32 dist2\n"
+"int32 hype2\n"
+"int32 prox3\n"
+"int32 dist3\n"
+"int32 hype3\n"
 ;
   }
 
@@ -249,23 +249,23 @@ struct Printer< ::basic_sensor_interface::tendon_sns_<ContainerAllocator> >
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::basic_sensor_interface::tendon_sns_<ContainerAllocator>& v)
   {
     s << indent << "prox1: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.prox1);
+    Printer<int32_t>::stream(s, indent + "  ", v.prox1);
     s << indent << "dist1: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.dist1);
+    Printer<int32_t>::stream(s, indent + "  ", v.dist1);
     s << indent << "hype1: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.hype1);
+    Printer<int32_t>::stream(s, indent + "  ", v.hype1);
     s << indent << "prox2: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.prox2);
+    Printer<int32_t>::stream(s, indent + "  ", v.prox2);
     s << indent << "dist2: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.dist2);
+    Printer<int32_t>::stream(s, indent + "  ", v.dist2);
     s << indent << "hype2: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.hype2);
+    Printer<int32_t>::stream(s, indent + "  ", v.hype2);
     s << indent << "prox3: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.prox3);
+    Printer<int32_t>::stream(s, indent + "  ", v.prox3);
     s << indent << "dist3: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.dist3);
+    Printer<int32_t>::stream(s, indent + "  ", v.dist3);
     s << indent << "hype3: ";
-    Printer<uint32_t>::stream(s, indent + "  ", v.hype3);
+    Printer<int32_t>::stream(s, indent + "  ", v.hype3);
   }
 };
 

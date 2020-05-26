@@ -55,69 +55,69 @@
   (:serialization-length
    ()
    (+
-    ;; uint32 _prox1
+    ;; int32 _prox1
     4
-    ;; uint32 _dist1
+    ;; int32 _dist1
     4
-    ;; uint32 _prox2
+    ;; int32 _prox2
     4
-    ;; uint32 _dist2
+    ;; int32 _dist2
     4
-    ;; uint32 _prox3
+    ;; int32 _prox3
     4
-    ;; uint32 _dist3
+    ;; int32 _dist3
     4
     ))
   (:serialize
    (&optional strm)
    (let ((s (if strm strm
               (make-string-output-stream (send self :serialization-length)))))
-     ;; uint32 _prox1
+     ;; int32 _prox1
        (write-long _prox1 s)
-     ;; uint32 _dist1
+     ;; int32 _dist1
        (write-long _dist1 s)
-     ;; uint32 _prox2
+     ;; int32 _prox2
        (write-long _prox2 s)
-     ;; uint32 _dist2
+     ;; int32 _dist2
        (write-long _dist2 s)
-     ;; uint32 _prox3
+     ;; int32 _prox3
        (write-long _prox3 s)
-     ;; uint32 _dist3
+     ;; int32 _dist3
        (write-long _dist3 s)
      ;;
      (if (null strm) (get-output-stream-string s))))
   (:deserialize
    (buf &optional (ptr- 0))
-   ;; uint32 _prox1
+   ;; int32 _prox1
      (setq _prox1 (sys::peek buf ptr- :integer)) (incf ptr- 4)
-   ;; uint32 _dist1
+   ;; int32 _dist1
      (setq _dist1 (sys::peek buf ptr- :integer)) (incf ptr- 4)
-   ;; uint32 _prox2
+   ;; int32 _prox2
      (setq _prox2 (sys::peek buf ptr- :integer)) (incf ptr- 4)
-   ;; uint32 _dist2
+   ;; int32 _dist2
      (setq _dist2 (sys::peek buf ptr- :integer)) (incf ptr- 4)
-   ;; uint32 _prox3
+   ;; int32 _prox3
      (setq _prox3 (sys::peek buf ptr- :integer)) (incf ptr- 4)
-   ;; uint32 _dist3
+   ;; int32 _dist3
      (setq _dist3 (sys::peek buf ptr- :integer)) (incf ptr- 4)
    ;;
    self)
   )
 
-(setf (get basic_sensor_interface::joint_sns :md5sum-) "0370817355f4d293f185fcd9ba10ba17")
+(setf (get basic_sensor_interface::joint_sns :md5sum-) "8b57bff00d9b97e6f6a22eb31c6895cc")
 (setf (get basic_sensor_interface::joint_sns :datatype-) "basic_sensor_interface/joint_sns")
 (setf (get basic_sensor_interface::joint_sns :definition-)
-      "uint32 prox1
-uint32 dist1
-uint32 prox2
-uint32 dist2
-uint32 prox3
-uint32 dist3
+      "int32 prox1
+int32 dist1
+int32 prox2
+int32 dist2
+int32 prox3
+int32 dist3
 
 ")
 
 
 
-(provide :basic_sensor_interface/joint_sns "0370817355f4d293f185fcd9ba10ba17")
+(provide :basic_sensor_interface/joint_sns "8b57bff00d9b97e6f6a22eb31c6895cc")
 
 

@@ -7,18 +7,18 @@ import struct
 
 
 class joint_sns(genpy.Message):
-  _md5sum = "0370817355f4d293f185fcd9ba10ba17"
+  _md5sum = "8b57bff00d9b97e6f6a22eb31c6895cc"
   _type = "basic_sensor_interface/joint_sns"
   _has_header = False #flag to mark the presence of a Header object
-  _full_text = """uint32 prox1
-uint32 dist1
-uint32 prox2
-uint32 dist2
-uint32 prox3
-uint32 dist3
+  _full_text = """int32 prox1
+int32 dist1
+int32 prox2
+int32 dist2
+int32 prox3
+int32 dist3
 """
   __slots__ = ['prox1','dist1','prox2','dist2','prox3','dist3']
-  _slot_types = ['uint32','uint32','uint32','uint32','uint32','uint32']
+  _slot_types = ['int32','int32','int32','int32','int32','int32']
 
   def __init__(self, *args, **kwds):
     """
@@ -70,7 +70,7 @@ uint32 dist3
     """
     try:
       _x = self
-      buff.write(_get_struct_6I().pack(_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3))
+      buff.write(_get_struct_6i().pack(_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -84,7 +84,7 @@ uint32 dist3
       _x = self
       start = end
       end += 24
-      (_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3,) = _get_struct_6I().unpack(str[start:end])
+      (_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3,) = _get_struct_6i().unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -98,7 +98,7 @@ uint32 dist3
     """
     try:
       _x = self
-      buff.write(_get_struct_6I().pack(_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3))
+      buff.write(_get_struct_6i().pack(_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -113,7 +113,7 @@ uint32 dist3
       _x = self
       start = end
       end += 24
-      (_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3,) = _get_struct_6I().unpack(str[start:end])
+      (_x.prox1, _x.dist1, _x.prox2, _x.dist2, _x.prox3, _x.dist3,) = _get_struct_6i().unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -122,9 +122,9 @@ _struct_I = genpy.struct_I
 def _get_struct_I():
     global _struct_I
     return _struct_I
-_struct_6I = None
-def _get_struct_6I():
-    global _struct_6I
-    if _struct_6I is None:
-        _struct_6I = struct.Struct("<6I")
-    return _struct_6I
+_struct_6i = None
+def _get_struct_6i():
+    global _struct_6i
+    if _struct_6i is None:
+        _struct_6i = struct.Struct("<6i")
+    return _struct_6i
