@@ -725,6 +725,8 @@ angles_DIR:PATH=/opt/ros/melodic/share/angles/cmake
 //Value Computed by CMake
 basic_sensor_interface_BINARY_DIR:STATIC=/home/wilson/ros_ws_1/build/basic_sensor_interface
 
+basic_sensor_interface_DIR:PATH=
+
 //Value Computed by CMake
 basic_sensor_interface_SOURCE_DIR:STATIC=/home/wilson/ros_ws_1/src/basic_sensor_interface
 

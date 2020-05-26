@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(basic_sensor_interface_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT " " STREQUAL " ")
+if(NOT "/home/wilson/ros_ws_1/devel/include " STREQUAL " ")
   set(basic_sensor_interface_INCLUDE_DIRS "")
-  set(_include_dirs "")
+  set(_include_dirs "/home/wilson/ros_ws_1/devel/include")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/wilson/ros_ws_1/devel/lib;/opt/ros/melodic/lib)
+    foreach(path /home/wilson/ros_ws_1/devel/lib;/home/wilson/ros_ws_1/devel/lib;/opt/ros/melodic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -177,7 +177,7 @@ foreach(library ${libraries})
   endif()
 endforeach()
 
-set(basic_sensor_interface_EXPORTED_TARGETS "")
+set(basic_sensor_interface_EXPORTED_TARGETS "basic_sensor_interface_generate_messages_cpp;basic_sensor_interface_generate_messages_eus;basic_sensor_interface_generate_messages_lisp;basic_sensor_interface_generate_messages_nodejs;basic_sensor_interface_generate_messages_py")
 # create dummy targets for exported code generation targets to make life of users easier
 foreach(t ${basic_sensor_interface_EXPORTED_TARGETS})
   if(NOT TARGET ${t})
@@ -185,7 +185,7 @@ foreach(t ${basic_sensor_interface_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "")
+set(depends "roscpp;rospy;std_msgs;message_runtime")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls
@@ -214,7 +214,7 @@ foreach(depend ${depends})
   list(APPEND basic_sensor_interface_EXPORTED_TARGETS ${${basic_sensor_interface_dep}_EXPORTED_TARGETS})
 endforeach()
 
-set(pkg_cfg_extras "")
+set(pkg_cfg_extras "basic_sensor_interface-msg-extras.cmake")
 foreach(extra ${pkg_cfg_extras})
   if(NOT IS_ABSOLUTE ${extra})
     set(extra ${basic_sensor_interface_DIR}/${extra})

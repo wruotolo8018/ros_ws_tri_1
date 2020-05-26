@@ -1,4 +1,6 @@
 # Hashes of file build rules.
+dcb07f560d119716fc1d008dfad42588 /home/wilson/ros_ws_1/devel/include/basic_sensor_interface/joint_sns.h
+c3d1d57655ffdea60795f6df2a8a48cc /home/wilson/ros_ws_1/devel/include/basic_sensor_interface/tendon_sns.h
 624fa2f3dffc5602ca761e87a84709eb /home/wilson/ros_ws_1/devel/include/robotiq_2f_gripper_control/Robotiq2FGripper_robot_input.h
 be0690e8ba95a0191fa3f67981ba7cfc /home/wilson/ros_ws_1/devel/include/robotiq_2f_gripper_control/Robotiq2FGripper_robot_output.h
 1d51176b3f1b097af38fec2ce2bc0919 /home/wilson/ros_ws_1/devel/include/robotiq_3f_gripper_articulated_msgs/Robotiq3FGripperRobotInput.h
@@ -21,6 +23,9 @@ ebb173ab315809084bdd2c2ebb36aa32 /home/wilson/ros_ws_1/devel/include/ur_msgs/Set
 efe26219bf0a1795394db759e85bb565 /home/wilson/ros_ws_1/devel/include/ur_msgs/SetPayload.h
 426e8c06c3b116484d1e887141fe625f /home/wilson/ros_ws_1/devel/include/ur_msgs/SetSpeedSliderFraction.h
 1bfbfb7b45c31ea88222e2cb559d79f2 /home/wilson/ros_ws_1/devel/include/ur_msgs/ToolDataMsg.h
+4802b622f65ce592a25b025010d91551 /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/basic_sensor_interface/msg/__init__.py
+77a1061809fa2effab4e58dbc092ff21 /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/basic_sensor_interface/msg/_joint_sns.py
+10a41e25ebaeca680dcee1e054a15984 /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/basic_sensor_interface/msg/_tendon_sns.py
 f8b9cd6cff4c35b518909e7acd54e68a /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/robotiq_2f_gripper_control/msg/_Robotiq2FGripper_robot_input.py
 6aa2aa80488da310e7305e307c92842c /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/robotiq_2f_gripper_control/msg/_Robotiq2FGripper_robot_output.py
 1a44735bd83563382a9c16e8d1498f23 /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/robotiq_2f_gripper_control/msg/__init__.py
@@ -48,6 +53,8 @@ cb93d4e73269dbb66cfcb7956fa68c7a /home/wilson/ros_ws_1/devel/lib/python2.7/dist-
 4f35ccbb03d293a265bb350dcbc59594 /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/ur_msgs/srv/_SetPayload.py
 84189e9bac77375d63be50cb020a35f4 /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/ur_msgs/srv/_SetSpeedSliderFraction.py
 141dea68f33eefd7eb5391250379067f /home/wilson/ros_ws_1/devel/lib/python2.7/dist-packages/ur_msgs/srv/__init__.py
+3e02651cb028540a47e791a97f02799d /home/wilson/ros_ws_1/devel/share/common-lisp/ros/basic_sensor_interface/msg/joint_sns.lisp
+897c7516dfd14778c42edd1c80d1e61d /home/wilson/ros_ws_1/devel/share/common-lisp/ros/basic_sensor_interface/msg/tendon_sns.lisp
 a2f29b8137ed2b43815a9165a7313344 /home/wilson/ros_ws_1/devel/share/common-lisp/ros/robotiq_2f_gripper_control/msg/Robotiq2FGripper_robot_input.lisp
 df5b83ed92f766c364f07f506d0230a4 /home/wilson/ros_ws_1/devel/share/common-lisp/ros/robotiq_2f_gripper_control/msg/Robotiq2FGripper_robot_output.lisp
 aafa38ec463035ee7cbfec98f4e7e017 /home/wilson/ros_ws_1/devel/share/common-lisp/ros/robotiq_3f_gripper_articulated_msgs/msg/Robotiq3FGripperRobotInput.lisp
@@ -68,6 +75,8 @@ cdf0784f765e9122a46a6ecba5c9110f /home/wilson/ros_ws_1/devel/share/common-lisp/r
 4a63bb3a6224d4cd9bde01c497596c57 /home/wilson/ros_ws_1/devel/share/common-lisp/ros/ur_msgs/srv/SetIO.lisp
 94d190cc21230c61bc9a5883907c8724 /home/wilson/ros_ws_1/devel/share/common-lisp/ros/ur_msgs/srv/SetPayload.lisp
 14d0728f6c06c7ab90d07b2b7060a358 /home/wilson/ros_ws_1/devel/share/common-lisp/ros/ur_msgs/srv/SetSpeedSliderFraction.lisp
+bf5bdff2512a610b301c10abaa2176c2 /home/wilson/ros_ws_1/devel/share/gennodejs/ros/basic_sensor_interface/msg/joint_sns.js
+b48ca6eee24cb26a24fbd32605f7a5eb /home/wilson/ros_ws_1/devel/share/gennodejs/ros/basic_sensor_interface/msg/tendon_sns.js
 cdbf9a766823ba3fd47dc50d43484c5c /home/wilson/ros_ws_1/devel/share/gennodejs/ros/robotiq_2f_gripper_control/msg/Robotiq2FGripper_robot_input.js
 2298709d617042c7a150a276921c378f /home/wilson/ros_ws_1/devel/share/gennodejs/ros/robotiq_2f_gripper_control/msg/Robotiq2FGripper_robot_output.js
 e72a166b41627592561a444d027eddd0 /home/wilson/ros_ws_1/devel/share/gennodejs/ros/robotiq_3f_gripper_articulated_msgs/msg/Robotiq3FGripperRobotInput.js
@@ -88,6 +97,9 @@ a9e1302ae1d8db621c81d79e66be951d /home/wilson/ros_ws_1/devel/share/gennodejs/ros
 4c2119a3d3971762b7819d558b24ce67 /home/wilson/ros_ws_1/devel/share/gennodejs/ros/ur_msgs/srv/SetIO.js
 e65547933692b87f8f822ab007250c02 /home/wilson/ros_ws_1/devel/share/gennodejs/ros/ur_msgs/srv/SetPayload.js
 18160fe8cb3e377c8d6d76c2e9fa85e5 /home/wilson/ros_ws_1/devel/share/gennodejs/ros/ur_msgs/srv/SetSpeedSliderFraction.js
+1589070f49cf6f9694c7e01f1ec2062c /home/wilson/ros_ws_1/devel/share/roseus/ros/basic_sensor_interface/manifest.l
+dd380df4ef31227c7ef51caa56c7918a /home/wilson/ros_ws_1/devel/share/roseus/ros/basic_sensor_interface/msg/joint_sns.l
+e18ae3d90b80abbd69399f89cff47f2f /home/wilson/ros_ws_1/devel/share/roseus/ros/basic_sensor_interface/msg/tendon_sns.l
 c05d324b98862a9608087b54e82a52b9 /home/wilson/ros_ws_1/devel/share/roseus/ros/robotiq_2f_gripper_control/manifest.l
 10caec3f694142734255e745c9a773e8 /home/wilson/ros_ws_1/devel/share/roseus/ros/robotiq_2f_gripper_control/msg/Robotiq2FGripper_robot_input.l
 f28a7dc147f27acf3e91725450ed2d9f /home/wilson/ros_ws_1/devel/share/roseus/ros/robotiq_2f_gripper_control/msg/Robotiq2FGripper_robot_output.l
@@ -115,6 +127,13 @@ da259eb40e2cbcf19aaeeeeef62e7cdf /home/wilson/ros_ws_1/devel/share/roseus/ros/ur
 e23817d3e69b03cef48595a9cd513bbe /home/wilson/ros_ws_1/devel/share/roseus/ros/ur_msgs/srv/SetPayload.l
 f857f16c2fcecf1e262247a2e83146e3 /home/wilson/ros_ws_1/devel/share/roseus/ros/ur_msgs/srv/SetSpeedSliderFraction.l
 f319353cd23de245e2041b1516ef7862 CMakeFiles/clean_test_results
+73e0f87dfe02c53320bf2f82aa8ffc1b basic_sensor_interface/CMakeFiles/_basic_sensor_interface_generate_messages_check_deps_joint_sns
+b242f51efa64e6f310a8f5e9abe2f37f basic_sensor_interface/CMakeFiles/_basic_sensor_interface_generate_messages_check_deps_tendon_sns
+b4fdce2ba9e7ac6cf7ef61dc0110610d basic_sensor_interface/CMakeFiles/basic_sensor_interface_generate_messages_cpp
+b4fdce2ba9e7ac6cf7ef61dc0110610d basic_sensor_interface/CMakeFiles/basic_sensor_interface_generate_messages_eus
+b4fdce2ba9e7ac6cf7ef61dc0110610d basic_sensor_interface/CMakeFiles/basic_sensor_interface_generate_messages_lisp
+b4fdce2ba9e7ac6cf7ef61dc0110610d basic_sensor_interface/CMakeFiles/basic_sensor_interface_generate_messages_nodejs
+b4fdce2ba9e7ac6cf7ef61dc0110610d basic_sensor_interface/CMakeFiles/basic_sensor_interface_generate_messages_py
 f9bc1fcef7f627df2432733b9a8abb88 robotiq/robotiq_2f_gripper_control/CMakeFiles/_robotiq_2f_gripper_control_generate_messages_check_deps_Robotiq2FGripper_robot_input
 acdba40e9bf9acc0f3fdbf4573555c2b robotiq/robotiq_2f_gripper_control/CMakeFiles/_robotiq_2f_gripper_control_generate_messages_check_deps_Robotiq2FGripper_robot_output
 19f785232cb2558ce94d392cb435bb69 robotiq/robotiq_2f_gripper_control/CMakeFiles/robotiq_2f_gripper_control_generate_messages_cpp
