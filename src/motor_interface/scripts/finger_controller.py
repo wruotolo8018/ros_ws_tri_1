@@ -17,23 +17,18 @@ STOPPED = 0
 MANUAL_INPUT = 1
 state = STOPPED
 
-## Manual state variables
-#manual_motor_string = "505050505050505050"
-
-## Drive hand state variables
-#sensor_1_vector = np.zeros(4)
-#sensor_2_vector = np.zeros(4)
-#sensor_3_vector = np.zeros(4)
-#drive_motor_string = "505050505050505050"
-
-# Useful saved motor strings
+# Useful saved motor values
 stop_motor_string = "505050505050505050"
+stop_motor_array = np.array([50,50,50,50,50,50,50,50,50])
 
 # Basic sensor data variables
 cur_tendon_data = np.zeros(9)
 prev_tendon_data = np.zeros(9)
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
+
+# PWM variables
+cur_pwm_array = np.zeros(9)
 
 # Accessory functions 
 def arduino_map(val, inMin, inMax, outMin, outMax):
@@ -92,6 +87,19 @@ def pose_change_callback(data):
     global cur_des_pose
     cur_des_pose = int(data.data)
     print("Current desired pose set to: " + str(cur_des_pose))
+
+def pwm_array_to_string(pwm_array):
+    pwm_string = ""
+    for val in pwm_array:
+        if (val > 99):
+            val = 99
+        elif (val < 0):
+            val = 0
+        if (val < 10):
+            pwm_string = pwm_string + "0" + str(int(val))
+        else:
+            pwm_string = pwm_string + str(int(val))
+    return pwm_string
     
 # Main loop
 def motor_controller():
@@ -103,11 +111,13 @@ def motor_controller():
     rospy.Subscriber("master_state", String, state_callback)
     rospy.Subscriber("finger_tendon_sensors", tendon_sns, tendon_sns_callback)
     rospy.Subscriber("finger_joint_sensors", joint_sns, joint_sns_callback)
-    global cmdPub
     cmdPub = rospy.Publisher('motor_cmd', String, queue_size=10)
     
     # Temp subscriber to manual pose topic
     rospy.Subscriber("desired_pose", Int16, pose_change_callback)
+    
+    # Global variables
+    global cur_pwm_array
     
     # Set loop speed
     rate = rospy.Rate(50) #50hz
@@ -120,9 +130,9 @@ def motor_controller():
         if (state == STOPPED): 
             cmdPub.publish(stop_motor_string)
             cur_motor_string = stop_motor_string
+            cur_pwm_array = stop_motor_array
         elif (state == MOVE_TO_POSE):
             # TODO: Setup hard coded desired values for demo
-            print(cur_tendon_data)
             global cur_des_pose
             if (cur_des_pose == 1):
                 des_prox_value = 50
@@ -136,10 +146,12 @@ def motor_controller():
             
         elif (state == BLIND_GRASPING):
             # TODO: lose grasping tendons blindly
+            cur_pwm_array[3:6] = [65,65,65]
+            cur_motor_string = pwm_array_to_string(cur_pwm_array)
             # TODO: Open hyperextension tendons for just a little bit
-            print(cur_joint_data)
+#            print(cur_joint_data)
             
-#        print(cur_motor_string)
+        print(cur_motor_string)
         cmdPub.publish(cur_motor_string)
         
         rate.sleep()
