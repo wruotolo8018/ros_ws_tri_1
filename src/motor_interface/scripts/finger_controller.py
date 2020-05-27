@@ -7,10 +7,8 @@ from std_msgs.msg import String
 import serial
 import time
 import numpy as np
-from tae_psoc.msg import SensorPacket
-from tae_psoc.msg import cmdToPsoc
-from tae_psoc.msg import Sensor_Fast
-from tae_psoc.msg import Sensor_Indiv
+from tae_psoc.msg import SensorPacket, cmdToPsoc, Sensor_Fast, Sensor_Indiv
+from basic_sensor_interface.msg import tendon_sns, joint_sns
 
 # state definitions
 MOVE_TO_POSE = 2
@@ -63,17 +61,32 @@ def tendon_sns_callback(data):
     global prev_tendon_data, cur_tendon_data
     prev_tendon_data = cur_tendon_data
     # Fill cur_tendon_data with updated data
-    for i in range(9):
-        cur_tendon_data[i] = data[i]
+    cur_tendon_data[0] = data.prox1
+    cur_tendon_data[1] = data.dist1
+    cur_tendon_data[2] = data.hype1
+    
+    cur_tendon_data[3] = data.prox2
+    cur_tendon_data[4] = data.dist2
+    cur_tendon_data[5] = data.hype2
+
+    cur_tendon_data[6] = data.prox3
+    cur_tendon_data[7] = data.dist3
+    cur_tendon_data[8] = data.hype3
+    
 
 # TODO: Debugging
 def joint_sns_callback(data):
     # Bump old data to prev variable
     global prev_joint_data, cur_joint_data
     prev_joint_data = cur_joint_data
+    cur_joint_data[0] = data.prox1
+    cur_joint_data[1] = data.dist1
+    cur_joint_data[2] = data.prox2
+    cur_joint_data[3] = data.dist2
+    cur_joint_data[4] = data.prox3
+    cur_joint_data[5] = data.dist3
     # Fill cur_tendon_data with updated data
-    for i in range(9):
-        cur_joint_data[i] = data[i]
+
     
 # Main loop
 def motor_controller():
@@ -83,8 +96,8 @@ def motor_controller():
     
     # Setup subscription to cmd_motor_controller topic
     rospy.Subscriber("master_state", String, state_callback)
-    rospy.Subscriber("finger_tendon_sensors", String, tendon_sns_callback)
-    rospy.Subscriber("finger_joint_sensors", Sensor_Fast, joint_sns_callback)
+    rospy.Subscriber("finger_tendon_sensors", tendon_sns, tendon_sns_callback)
+    rospy.Subscriber("finger_joint_sensors", joint_sns, joint_sns_callback)
     global cmdPub
     cmdPub = rospy.Publisher('motor_cmd', String, queue_size=10)
     
@@ -101,13 +114,13 @@ def motor_controller():
             cur_motor_string = stop_motor_string
         elif (state == MOVE_TO_POSE):
             # TODO: Position controller?
-            x = 1
+            print(cur_tendon_data)
         elif (state == BLIND_GRASPING):
             # TODO: lose grasping tendons blindly
             # TODO: Open hyperextension tendons for just a little bit
-            x = 1
+            print(cur_joint_data)
             
-        print(cur_motor_string)
+#        print(cur_motor_string)
         cmdPub.publish(cur_motor_string)
         
         rate.sleep()
