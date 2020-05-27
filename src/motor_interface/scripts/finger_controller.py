@@ -3,7 +3,7 @@
 
 # Imports
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Int16
 import serial
 import time
 import numpy as np
@@ -87,6 +87,11 @@ def joint_sns_callback(data):
     cur_joint_data[5] = data.dist3
     # Fill cur_tendon_data with updated data
 
+cur_des_pose = 0
+def pose_change_callback(data):
+    global cur_des_pose
+    cur_des_pose = int(data.data)
+    print("Current desired pose set to: " + str(cur_des_pose))
     
 # Main loop
 def motor_controller():
@@ -101,8 +106,11 @@ def motor_controller():
     global cmdPub
     cmdPub = rospy.Publisher('motor_cmd', String, queue_size=10)
     
+    # Temp subscriber to manual pose topic
+    rospy.Subscriber("desired_pose", Int16, pose_change_callback)
+    
     # Set loop speed
-    rate = rospy.Rate(50) #100hz???
+    rate = rospy.Rate(50) #50hz
     
     # Output that things are going
     print("Running motor_controller node.")
@@ -113,8 +121,19 @@ def motor_controller():
             cmdPub.publish(stop_motor_string)
             cur_motor_string = stop_motor_string
         elif (state == MOVE_TO_POSE):
-            # TODO: Position controller?
+            # TODO: Setup hard coded desired values for demo
             print(cur_tendon_data)
+            global cur_des_pose
+            if (cur_des_pose == 1):
+                des_prox_value = 50
+                des_dist_value = 50
+                print("Testing des pose 1")
+            elif (cur_des_pose):
+                des_prox_value = 60
+                des_dist_value = 60
+                print("Testing des pose 2")
+            # TODO: Run motor controller to get values
+            
         elif (state == BLIND_GRASPING):
             # TODO: lose grasping tendons blindly
             # TODO: Open hyperextension tendons for just a little bit
