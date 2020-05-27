@@ -22,19 +22,19 @@ def master_state_machine():
         # Display control options
         print('Enter a Command:')
         print('[space] = stop all motors (and enter manual_input mode)')
-        print('[1] = drive motors by pressing sensors')
-        print('[2] = unclear at this stage, but can add more as we see fit')
+        print('[1] = go to move to pose mode')
+        print('[2] = grasp blindly')
         input_string = raw_input('Input: ')
         
         # Handle input and publish appropriate state
         if (input_string == ' '):
-            state_string = "manual_input"
+            state_string = "stop"
             pub_master_state.publish(state_string)
         elif (input_string == '1'):
-            state_string = "drive_hand"
+            state_string = "move_to_pose"
             pub_master_state.publish(state_string)
         elif (input_string == '2'):
-            state_string = "manual_input"
+            state_string = "grasp"
             pub_master_state.publish(state_string)
         
         # Sleep to match control loop frequency (shouldn't be necessary with manual input)
