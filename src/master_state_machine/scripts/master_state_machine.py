@@ -22,8 +22,11 @@ def master_state_machine():
         # Display control options
         print('Enter a Command:')
         print('[space] = stop all motors (and enter manual_input mode)')
-        print('[1] = go to move to pose mode')
-        print('[2] = grasp blindly')
+        print('[1] = move to pose 1')
+        print('[2] = move to pose 2')
+        print('[3] = move to pose 3')
+        print('[4] = tighten tendons')
+        print('[5] = loosen tendons')
         input_string = raw_input('Input: ')
         
         # Handle input and publish appropriate state
@@ -31,14 +34,20 @@ def master_state_machine():
             state_string = "stop"
             pub_master_state.publish(state_string)
         elif (input_string == '1'):
-            state_string = "move_to_pose"
+            state_string = "move_to_pose_1"
             pub_master_state.publish(state_string)
         elif (input_string == '2'):
-            state_string = "grasp"
+            state_string = "move_to_pose_2"
             pub_master_state.publish(state_string)
-        
-        # Sleep to match control loop frequency (shouldn't be necessary with manual input)
-#        rate.sleep()
+        elif (input_string == '3'):
+            state_string = "move_to_pose_3"
+            pub_master_state.publish(state_string)
+        elif (input_string == '4'):
+            state_string = "tighten"
+            pub_master_state.publish(state_string)
+        elif (input_string == '5'):
+            state_string = "loosen"
+            pub_master_state.publish(state_string)
 
 if __name__ == '__main__':
     try:

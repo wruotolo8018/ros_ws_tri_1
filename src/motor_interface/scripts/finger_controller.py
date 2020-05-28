@@ -11,13 +11,14 @@ from tae_psoc.msg import SensorPacket, cmdToPsoc, Sensor_Fast, Sensor_Indiv
 from basic_sensor_interface.msg import tendon_sns, joint_sns
 
 # state definitions
-MOVE_TO_POSE = 2
+MOVE_TO_POSE_1 = 2
+MOVE_TO_POSE_2 = 3
+MOVE_TO_POSE_3 = 4
 
+TIGHTEN = 5
+LOOSEN = 6
 
-
-BLIND_GRASPING = 2
 STOPPED = 0
-MANUAL_INPUT = 1
 state = STOPPED
 
 # Useful saved motor values
@@ -45,15 +46,24 @@ def state_callback(data):
     global state
 #    print("Incoming command: " + incomingString)
     
-    if (incomingString == "move_to_pose"):
-        state = MOVE_TO_POSE
-        print("Switching state to MOVE_TO_POSE")
+    if (incomingString == "move_to_pose_1"):
+        state = MOVE_TO_POSE_1
+        print("Switching state to MOVE_TO_POSE_1")
+    elif (incomingString == "move_to_pose_2"):
+        state = MOVE_TO_POSE_2
+        print("Switching state to MOVE_TO_POSE_2")
+    elif (incomingString == "move_to_pose_3"):
+        state = MOVE_TO_POSE_3
+        print("Switching state to MOVE_TO_POSE_3")
     elif (incomingString == "stop"):
         state = STOPPED
         print("Switching state to STOPPED")
-    elif (incomingString == "grasp"):
-        state = BLIND_GRASPING
-        print("Switching state to BLIND_GRASPING")
+    elif (incomingString == "tighten"):
+        state = TIGHTEN
+        print("Switching state to TIGHTEN")
+    elif (incomingString == "loosen"):
+        state = LOOSEN
+        print("Switching state to LOOSEN")
         
 # TODO: Debugging
 def tendon_sns_callback(data):
@@ -87,11 +97,6 @@ def joint_sns_callback(data):
     cur_joint_data[5] = data.dist3
     # Fill cur_tendon_data with updated data
 
-cur_des_pose = 0
-def pose_change_callback(data):
-    global cur_des_pose
-    cur_des_pose = int(data.data)
-    print("Current desired pose set to: " + str(cur_des_pose))
 
 def pwm_array_to_string(pwm_array):
     pwm_string = ""
@@ -105,7 +110,45 @@ def pwm_array_to_string(pwm_array):
         else:
             pwm_string = pwm_string + str(int(val))
     return pwm_string
+
+def simple_PID(des_prox, des_dist):
+    global cur_joint_data, cur_pwm_array, cur_motor_string
+    kp1 = 1
+    kp2 = 1               
+    Ppwm = -kp1*(des_prox - cur_joint_data[0])
+    Dpwm = -kp2*(des_dist - cur_joint_data[1])
+    Hpwm = kp1*(des_prox - cur_joint_data[0]) + kp2*(des_dist - cur_joint_data[1])
     
+    if (Ppwm < -25):
+        Ppwm = -25
+    elif (Ppwm > 25):
+        Ppwm = Ppwm/2
+        if (Ppwm > 25):
+            Ppwm = 25
+    Ppwm = 50 + Ppwm
+    
+    if (Dpwm < -25):
+        Dpwm = -25
+    elif (Dpwm > 25):
+        Dpwm = Dpwm/2
+        if (Dpwm > 25):
+            Dpwm = 25
+    Dpwm = 50 + Dpwm
+    
+    if (Hpwm < -25):
+        Hpwm = -25
+    elif (Hpwm > 25):
+        Hpwm = Hpwm/2
+        if (Hpwm > 25):
+            Hpwm = 25
+    Hpwm = 50 + Hpwm
+    
+    
+    cur_pwm_array[3:6] = [Ppwm, Dpwm, Hpwm]
+    print(cur_pwm_array)
+    cur_motor_string = pwm_array_to_string(cur_pwm_array)
+    return cur_motor_string
+
 # Main loop
 def motor_controller():
     
@@ -119,93 +162,41 @@ def motor_controller():
     cmdPub = rospy.Publisher('motor_cmd', String, queue_size=10)
     
     # Temp subscriber to manual pose topic
-    rospy.Subscriber("desired_pose", Int16, pose_change_callback)
+#    rospy.Subscriber("desired_pose", Int16, pose_change_callback)
     
     # Global variables
-    global cur_pwm_array
+    global cur_pwm_array, cur_des_pose
     
     # Set loop speed
     rate = rospy.Rate(50) #50hz
     
     # Output that things are going
     print("Running motor_controller node.")
-    
+
     while not rospy.is_shutdown():  
         # Internal state machine
         if (state == STOPPED): 
             cmdPub.publish(stop_motor_string)
             cur_motor_string = stop_motor_string
             cur_pwm_array = stop_motor_array
-        elif (state == MOVE_TO_POSE):
-            # TODO: Setup hard coded desired values for demo
-            global cur_des_pose
-            if (cur_des_pose == 1):
-                des_prox_value = 85
-                des_dist_value = 80
-                print("Testing des pose 1")
-                
-                kp1 = 1
-                kp2 = 1               
-                Ppwm = 50 - kp1*(des_prox_value - cur_joint_data[0])
-                Dpwm = 50 - kp2*(des_dist_value - cur_joint_data[1])
-                Hpwm = 50 + kp1*(des_prox_value - cur_joint_data[0]) + kp2*(des_dist_value - cur_joint_data[1])
-                if (Ppwm > 75):
-                    Ppwm = 75
-                elif Ppwm < 25:
-                    Ppwm = 25
-                if (Dpwm > 75):
-                    Dpwm = 75
-                elif Dpwm < 25:
-                    Dpwm = 25
-                if (Hpwm > 75):
-                    Hpwm = 75
-                elif Hpwm < 25:
-                    Hpwm = 25
-                cur_pwm_array[3:6] = [Ppwm, Dpwm, Hpwm]
-                cur_motor_string = pwm_array_to_string(cur_pwm_array)
-                
-            
-            elif (cur_des_pose == 2):
-                des_prox_value = 45
-                des_dist_value = 45
-                
-                kp1 = 1
-                kp2 = 1               
-                Ppwm = 50 - kp1*(des_prox_value - cur_joint_data[0])
-                Dpwm = 50 - kp2*(des_dist_value - cur_joint_data[1])
-                Hpwm = 50 + kp1*(des_prox_value - cur_joint_data[0]) + kp2*(des_dist_value - cur_joint_data[1])
-                if (Ppwm > 75):
-                    Ppwm = 75
-                elif Ppwm < 25:
-                    Ppwm = 25
-                if (Dpwm > 75):
-                    Dpwm = 75
-                elif Dpwm < 25:
-                    Dpwm = 25
-                if (Hpwm > 75):
-                    Hpwm = 75
-                elif Hpwm < 25:
-                    Hpwm = 25
-                cur_pwm_array[3:6] = [Ppwm, Dpwm, Hpwm]
-                cur_motor_string = pwm_array_to_string(cur_pwm_array)
-                
-                print("Testing des pose 2")
-                cur_motor_string = cur_motor_string
-                
-            elif (cur_des_pose == 3):
-                print("Motors loosening")
-                cur_motor_string = backward_motor_string
-            elif (cur_des_pose == 4):
-                print("Motors tightening")
-                cur_motor_string = forward_motor_string
-            # TODO: Run motor controller to get values
-            
-        elif (state == BLIND_GRASPING):
-            # TODO: lose grasping tendons blindly
-            cur_pwm_array[3:6] = [65,65,65]
+        elif (state == MOVE_TO_POSE_1):
+            des_prox_value = 85
+            des_dist_value = 80
+            cur_motor_string = simple_PID(des_prox_value, des_dist_value)
+        elif (state == MOVE_TO_POSE_2):
+            des_prox_value = 45
+            des_dist_value = 45
+            cur_motor_string = simple_PID(des_prox_value, des_dist_value)
+        elif (state == MOVE_TO_POSE_3):
+            des_prox_value = 65
+            des_dist_value = 65
+            cur_motor_string = simple_PID(des_prox_value, des_dist_value)       
+        elif (state == TIGHTEN):
+            cur_pwm_array[3:6] = [60,60,60]
             cur_motor_string = pwm_array_to_string(cur_pwm_array)
-            # TODO: Open hyperextension tendons for just a little bit
-#            print(cur_joint_data)
+        elif (state == LOOSEN):
+            cur_pwm_array[3:6] = [40,40,40]
+            cur_motor_string = pwm_array_to_string(cur_pwm_array)
             
         print(cur_motor_string)
         cmdPub.publish(cur_motor_string)

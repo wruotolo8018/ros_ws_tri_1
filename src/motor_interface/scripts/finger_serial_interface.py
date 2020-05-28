@@ -19,6 +19,8 @@ def motor_talker():
     rospy.init_node('finger_serial_interface', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     
+    print("Motor serial interface initialized")
+    
     while not rospy.is_shutdown():
         com.write(cur_motor_string)
         rate.sleep()
