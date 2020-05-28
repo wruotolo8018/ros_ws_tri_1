@@ -12,13 +12,18 @@ from basic_sensor_interface.msg import tendon_sns, joint_sns
 
 # state definitions
 MOVE_TO_POSE = 2
-BLIND_GRASPING = 3
+
+
+
+BLIND_GRASPING = 2
 STOPPED = 0
 MANUAL_INPUT = 1
 state = STOPPED
 
 # Useful saved motor values
 stop_motor_string = "505050505050505050"
+forward_motor_string = "505050606060505050"
+backward_motor_string = "505050404040505050"
 stop_motor_array = np.array([50,50,50,50,50,50,50,50,50])
 
 # Basic sensor data variables
@@ -135,13 +140,64 @@ def motor_controller():
             # TODO: Setup hard coded desired values for demo
             global cur_des_pose
             if (cur_des_pose == 1):
-                des_prox_value = 50
-                des_dist_value = 50
+                des_prox_value = 85
+                des_dist_value = 80
                 print("Testing des pose 1")
-            elif (cur_des_pose):
-                des_prox_value = 60
-                des_dist_value = 60
+                
+                kp1 = 1
+                kp2 = 1               
+                Ppwm = 50 - kp1*(des_prox_value - cur_joint_data[0])
+                Dpwm = 50 - kp2*(des_dist_value - cur_joint_data[1])
+                Hpwm = 50 + kp1*(des_prox_value - cur_joint_data[0]) + kp2*(des_dist_value - cur_joint_data[1])
+                if (Ppwm > 75):
+                    Ppwm = 75
+                elif Ppwm < 25:
+                    Ppwm = 25
+                if (Dpwm > 75):
+                    Dpwm = 75
+                elif Dpwm < 25:
+                    Dpwm = 25
+                if (Hpwm > 75):
+                    Hpwm = 75
+                elif Hpwm < 25:
+                    Hpwm = 25
+                cur_pwm_array[3:6] = [Ppwm, Dpwm, Hpwm]
+                cur_motor_string = pwm_array_to_string(cur_pwm_array)
+                
+            
+            elif (cur_des_pose == 2):
+                des_prox_value = 45
+                des_dist_value = 45
+                
+                kp1 = 1
+                kp2 = 1               
+                Ppwm = 50 - kp1*(des_prox_value - cur_joint_data[0])
+                Dpwm = 50 - kp2*(des_dist_value - cur_joint_data[1])
+                Hpwm = 50 + kp1*(des_prox_value - cur_joint_data[0]) + kp2*(des_dist_value - cur_joint_data[1])
+                if (Ppwm > 75):
+                    Ppwm = 75
+                elif Ppwm < 25:
+                    Ppwm = 25
+                if (Dpwm > 75):
+                    Dpwm = 75
+                elif Dpwm < 25:
+                    Dpwm = 25
+                if (Hpwm > 75):
+                    Hpwm = 75
+                elif Hpwm < 25:
+                    Hpwm = 25
+                cur_pwm_array[3:6] = [Ppwm, Dpwm, Hpwm]
+                cur_motor_string = pwm_array_to_string(cur_pwm_array)
+                
                 print("Testing des pose 2")
+                cur_motor_string = cur_motor_string
+                
+            elif (cur_des_pose == 3):
+                print("Motors loosening")
+                cur_motor_string = backward_motor_string
+            elif (cur_des_pose == 4):
+                print("Motors tightening")
+                cur_motor_string = forward_motor_string
             # TODO: Run motor controller to get values
             
         elif (state == BLIND_GRASPING):
