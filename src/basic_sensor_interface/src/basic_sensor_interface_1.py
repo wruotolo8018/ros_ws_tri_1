@@ -68,7 +68,7 @@ def basic_sensor_serial():
             read_string = com.read_until()
             
             # Print currently read string for debugging
-            print(read_string)
+            # print(read_string)
             
             # Populate message fields appropriately
             split_read_string = read_string.split('_')

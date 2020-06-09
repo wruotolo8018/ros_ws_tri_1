@@ -14,10 +14,8 @@ from basic_sensor_interface.msg import tendon_sns, joint_sns
 MOVE_TO_POSE_1 = 2
 MOVE_TO_POSE_2 = 3
 MOVE_TO_POSE_3 = 4
-
 TIGHTEN = 5
 LOOSEN = 6
-
 STOPPED = 0
 state = STOPPED
 
@@ -125,12 +123,14 @@ def pwm_cap(pwmVal, capVal):
         pwmVal = -capVal
     elif (pwmVal > capVal):
         pwmVal = capVal
-
+    return pwmVal    
+    
 
 # Accessory function to implement deadzones for stability
 def process_deadzone(pwmVal, deadzone_val):
     if (pwmVal < deadzone_val and pwmVal > -deadzone_val):
         pwmVal = 0
+    return pwmVal
 
 
 # Simple PID (really just P rn) control function to update pwm values based on sensed joint angles
@@ -150,7 +150,6 @@ def position_control(des_prox, des_dist, fing_num):
     Ppwm = int(-kp1*(des_prox - cur_joint_data[prox_index]))
     Dpwm = int(-kp2*(des_dist - cur_joint_data[dist_index]))
     Hpwm = int(kp1*(des_prox - cur_joint_data[prox_index]) + kp2*(des_dist - cur_joint_data[dist_index]))
-    
     # Cap pwm to max for component safety (there should be another larger cap at end of controls)
     Ppwm = pwm_cap(Ppwm, one_dir_pmw_cap)
     Dpwm = pwm_cap(Dpwm, one_dir_pmw_cap)
@@ -204,14 +203,12 @@ def gain_filter():
     x = 1
 
 
-def final_pwm_cap():
+def final_pwm_cap(one_dir_final_cap):
     # Access global variables
     global cur_pwm_array
-    # Set control variables
-    one_dir_final_cap = 35
     # Iterate through PWM array and apply cap
     for i in range(len(cur_pwm_array)):
-        cur_pwm_array[i] = pwm_cap(cur_pwm_array[i], one_dir_final_cap)
+        cur_pwm_array[i] = 50 + pwm_cap(cur_pwm_array[i] - 50, one_dir_final_cap)
     # TODO: Debugging
 
 
@@ -246,22 +243,22 @@ def motor_controller():
         elif (state == MOVE_TO_POSE_1):
             des_prox_value = 850
             des_dist_value = 800
-            position_control(des_prox_value, des_dist_value)
+            position_control(des_prox_value, des_dist_value,1)
             # TODO: contact PID
             # TODO: grasp force PID
             # TODO: filter with gain scheduler
             # TODO: modify based on tendon tension
-            # TODO: cap PWM for safety
+            final_pwm_cap(35);
         
         elif (state == MOVE_TO_POSE_2):
             des_prox_value = 450
             des_dist_value = 450
-            position_control(des_prox_value, des_dist_value)
+            position_control(des_prox_value, des_dist_value,1)
         
         elif (state == MOVE_TO_POSE_3):
             des_prox_value = 650
             des_dist_value = 650
-            position_control(des_prox_value, des_dist_value)     
+            position_control(des_prox_value, des_dist_value,1)     
        
         elif (state == TIGHTEN):
             cur_pwm_array[3:6] = [60,60,60]
@@ -271,7 +268,7 @@ def motor_controller():
         # Process pwm array into string for serial comms
         cur_motor_string = pwm_array_to_string(cur_pwm_array)
         # Print current motor string for debugging purposes
-        print(cur_motor_string)
+        print("Current motor string: " + cur_motor_string)
         # Publish current motor string for motor interface to handle
         cmdPub.publish(cur_motor_string)
         
