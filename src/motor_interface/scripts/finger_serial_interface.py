@@ -15,12 +15,12 @@ def motor_talker():
     
     # Setup subscription to cmd_motor_controller topic
     rospy.Subscriber("motor_cmd", String, motor_cmd_callback)
-    global cur_motor_string
     rospy.init_node('finger_serial_interface', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    
+    rate = rospy.Rate(20) # 10hz was used before and def stable
     print("Motor serial interface initialized")
     
+    # Constantly update output motor string based on incoming commands
+    global cur_motor_string
     while not rospy.is_shutdown():
         com.write(cur_motor_string)
         rate.sleep()
