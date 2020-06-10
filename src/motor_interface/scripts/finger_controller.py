@@ -28,13 +28,17 @@ stop_motor_array = np.array([0,0,0,0,0,0,0,0,0])
 # Basic sensor data variables
 cur_tendon_data = np.zeros(9)
 prev_tendon_data = np.zeros(9)
+tendon_binary_engagement = np.zeros(9)
+tendon_binary_cutoff = np.array([0,0,0,200,150,200,0,0,0])
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
+
 
 # PWM variables
 pos_pwm_array = np.zeros(9)
 contact_pwm_array = np.zeros(9)
 force_pwm_array = np.zeros(9)
+tension_pwm_array = np.zeros(9)
 cur_pwm_array = np.zeros(9)
 
 
@@ -87,6 +91,13 @@ def tendon_sns_callback(data):
     cur_tendon_data[6] = data.prox3
     cur_tendon_data[7] = data.dist3
     cur_tendon_data[8] = data.hype3
+    
+    # Go through and set binary values for taught or not
+    for i in range(9):
+        if (cur_tendon_data[i] > tendon_binary_cutoff[i]):
+            tendon_binary_engagement[i] = 1
+        else:
+            tendon_binary_engagement[i] = 0
     
     
 # Callback function for joint position sensing data
@@ -146,17 +157,25 @@ def position_control(des_prox, des_dist, fing_num):
     global cur_joint_data, pos_pwm_array
     
     # Set control variables
-    kp1 = 0.1
-    kp2 = 0.1   
+    kp1 = 0.2
+    kp2 = 0.2  
     one_dir_pmw_cap = 25 # In PWM, not sensor values
     one_dir_deadzone = 0 # In PWM, not sensor values
     prox_index = fing_num*2
     dist_index = fing_num*2+1
     
     # Run basic proportional control law
-    Ppwm = int(-kp1*(des_prox - cur_joint_data[prox_index]))
-    Dpwm = int(-kp2*(des_dist - cur_joint_data[dist_index]))
-    Hpwm = int(kp1*(des_prox - cur_joint_data[prox_index]) + kp2*(des_dist - cur_joint_data[dist_index]))
+    Ppwm = int(kp1*(des_prox - cur_joint_data[prox_index]))
+    Dpwm = int(kp2*(des_dist - cur_joint_data[dist_index]))
+    Hpwm = int(-(kp1*(des_prox - cur_joint_data[prox_index]) + kp2*(des_dist - cur_joint_data[dist_index])))
+    looseScale = 0.75
+    if (Ppwm < 0):
+        Ppwm = Ppwm*looseScale
+    if (Dpwm < 0):
+        Dpwm = Dpwm*looseScale
+    if (Hpwm < 0):
+        Hpwm = Hpwm*looseScale
+    
     
     # Cap pwm to max for component safety (there should be another larger cap at end of controls)
     Ppwm = pwm_cap(Ppwm, one_dir_pmw_cap)
@@ -168,13 +187,9 @@ def position_control(des_prox, des_dist, fing_num):
     Dpwm = process_deadzone(Dpwm, one_dir_deadzone)
     Hpwm = process_deadzone(Hpwm, one_dir_deadzone)
     
-#    # Center around middle value based on 0-99 pwm convention
-#    Ppwm = Ppwm
-#    Dpwm = Dpwm
-#    Hpwm = Hpwm
-    
     # Set pwm array values based on updates
     pos_pwm_array[fing_num*3 : fing_num*3+3] = [Ppwm, Dpwm, Hpwm]
+    
     # Print updated pwm array for debugging
     # print(pos_pwm_array)
 
@@ -196,20 +211,36 @@ def grasp_force_control(des_fn, fing_num):
    
     
 # Tendon sensing adaptor to prevent tendon laxity 
-def tendon_tension_control():
+def tendon_tension_control(fing_num):
     # Access global variables
-    global cur_tendon_data, cur_pwm_array
+    global cur_tendon_data, cur_pwm_array, tendon_binary_cutoff, tendon_binary_engagement, tension_pwm_array
+    
     # Set Control variables
-    binary_gain = 10
-    # TODO: go through tendon tension sensors and modifty to tighten if loose
-
+    binary_gain = 15
+    
+    # Go through tendon tension sensors and modifty to tighten if loose
+    # TODO: Debug
+    prox_index = fing_num*3
+    dist_index = fing_num*3+1
+    hype_index = fing_num*3+2
+    for i in range(prox_index, hype_index):
+        # If loose, tighten
+        if (tendon_binary_engagement[i] == 0):
+            tension_pwm_array[i] = binary_gain
+        # If already tense, do nothing
+        else:
+            tension_pwm_array[i] = 0
+    # Add binary adjustments to cur_pwm_array for processing before pwm cap
+    for i in range(len(cur_pwm_array)):
+        cur_pwm_array[i] += float(tension_pwm_array[i])
+    
 
 def gain_filter(fing_num):
     # Access global variables
     global pos_pwm_array, contact_pwm_array, force_pwm_array, cur_pwm_array
     
     # TODO: Define control variables based on state
-    kp = .5
+    kp = 1
     kc = 0
     kf = 0
     
@@ -275,26 +306,39 @@ def motor_controller():
         # Internal state machine sets pwm array based on state and sensed values
         if (state == MOVE_TO_POSE_1):
             # Define desired position values for testing
-            des_prox_value = 850
-            des_dist_value = 800
+            des_prox_value = 510
+            des_dist_value = 180
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)
             
             # TODO: contact PID
             
-            # Apply the new gain filter idea
+            # Apply the new gain filter idea to set cur_pwm_array
             gain_filter(1)
             
-            # TODO: modify based on tendon tension
+            # Modify based on tendon tension
+            tendon_tension_control(1)
             
             # Cap final pwm value 
             final_pwm_cap(35);
         
         elif (state == MOVE_TO_POSE_2):
-            des_prox_value = 450
-            des_dist_value = 450
+            # Define desired position values for testing
+            des_prox_value = 830
+            des_dist_value = 600
+            
+            # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)
+                        
+            # Apply the new gain filter idea to set cur_pwm_array
+            gain_filter(1)
+            
+            # TODO: modify based on tendon tension
+            tendon_tension_control(1)
+           
+            # Cap final pwm value 
+            final_pwm_cap(35);
         
         elif (state == MOVE_TO_POSE_3):
             des_prox_value = 650
@@ -302,10 +346,10 @@ def motor_controller():
             position_control(des_prox_value, des_dist_value,1)     
        
         elif (state == TIGHTEN):
-            cur_pwm_array[3:6] = [60,60,60]
+            cur_pwm_array[3:6] = [10,10,10]
         
         elif (state == LOOSEN):
-            cur_pwm_array[3:6] = [40,40,40]
+            cur_pwm_array[3:6] = [-10,-10,-10]
             
         # Process pwm array into string for serial comms
         cur_motor_string = pwm_array_to_string(cur_pwm_array)
