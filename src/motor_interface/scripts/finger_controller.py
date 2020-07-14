@@ -306,8 +306,8 @@ def motor_controller():
         # Internal state machine sets pwm array based on state and sensed values
         if (state == MOVE_TO_POSE_1):
             # Define desired position values for testing
-            des_prox_value = 510
-            des_dist_value = 180
+            des_prox_value = 0
+            des_dist_value = 0
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)
@@ -325,8 +325,8 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
-            des_prox_value = 830
-            des_dist_value = 600
+            des_prox_value = 400
+            des_dist_value = 400
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)
