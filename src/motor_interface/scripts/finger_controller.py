@@ -29,7 +29,7 @@ stop_motor_array = np.array([0,0,0,0,0,0,0,0,0])
 cur_tendon_data = np.zeros(9)
 prev_tendon_data = np.zeros(9)
 tendon_binary_engagement = np.zeros(9)
-tendon_binary_cutoff = np.array([0,0,0,200,150,200,0,0,0])
+tendon_binary_cutoff = np.array([0,0,0,100,100,250,0,0,0])
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
 
@@ -157,10 +157,11 @@ def position_control(des_prox, des_dist, fing_num):
     global cur_joint_data, pos_pwm_array
     
     # Set control variables
-    kp1 = 0.2
-    kp2 = 0.2  
-    one_dir_pmw_cap = 25 # In PWM, not sensor values
-    one_dir_deadzone = 0 # In PWM, not sensor values
+    kp1 = 0.3
+    kp2 = 0.3  
+    looseScale = 0.75
+    one_dir_pmw_cap = 30 # In PWM/2, not sensor values
+    one_dir_deadzone = 0 # In PWM/2, not sensor values
     prox_index = fing_num*2
     dist_index = fing_num*2+1
     
@@ -168,13 +169,13 @@ def position_control(des_prox, des_dist, fing_num):
     Ppwm = int(kp1*(des_prox - cur_joint_data[prox_index]))
     Dpwm = int(kp2*(des_dist - cur_joint_data[dist_index]))
     Hpwm = int(-(kp1*(des_prox - cur_joint_data[prox_index]) + kp2*(des_dist - cur_joint_data[dist_index])))
-    looseScale = 0.75
+
     if (Ppwm < 0):
         Ppwm = Ppwm*looseScale
     if (Dpwm < 0):
         Dpwm = Dpwm*looseScale
     if (Hpwm < 0):
-        Hpwm = Hpwm*looseScale
+        Hpwm = Hpwm*looseScale*.1
     
     
     # Cap pwm to max for component safety (there should be another larger cap at end of controls)
@@ -216,7 +217,7 @@ def tendon_tension_control(fing_num):
     global cur_tendon_data, cur_pwm_array, tendon_binary_cutoff, tendon_binary_engagement, tension_pwm_array
     
     # Set Control variables
-    binary_gain = 15
+    binary_gain = 30
     
     # Go through tendon tension sensors and modifty to tighten if loose
     # TODO: Debug
@@ -325,8 +326,8 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
-            des_prox_value = 400
-            des_dist_value = 400
+            des_prox_value = 300
+            des_dist_value = 300
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)
@@ -341,9 +342,21 @@ def motor_controller():
             final_pwm_cap(35);
         
         elif (state == MOVE_TO_POSE_3):
-            des_prox_value = 650
-            des_dist_value = 650
-            position_control(des_prox_value, des_dist_value,1)     
+            # Define desired position values for testing
+            des_prox_value = 500
+            des_dist_value = 500
+            
+            # Run proportional control on the des and sensed pos values
+            position_control(des_prox_value, des_dist_value,1)
+                        
+            # Apply the new gain filter idea to set cur_pwm_array
+            gain_filter(1)
+            
+            # TODO: modify based on tendon tension
+            tendon_tension_control(1)
+           
+            # Cap final pwm value 
+            final_pwm_cap(35);   
        
         elif (state == TIGHTEN):
             cur_pwm_array[3:6] = [10,10,10]
