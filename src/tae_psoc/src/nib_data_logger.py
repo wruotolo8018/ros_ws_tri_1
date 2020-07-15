@@ -70,6 +70,7 @@ def logging_cmd_callback(data):
         for i in range(36):
             axs.plot(nib_data_storage_array[i,:])
         
+        # Show plot
         plt.show()
         
         
