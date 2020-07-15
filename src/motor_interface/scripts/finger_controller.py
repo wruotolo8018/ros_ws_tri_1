@@ -33,7 +33,6 @@ tendon_binary_cutoff = np.array([0,0,0,100,100,250,0,0,0])
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
 
-
 # PWM variables
 pos_pwm_array = np.zeros(9)
 contact_pwm_array = np.zeros(9)
