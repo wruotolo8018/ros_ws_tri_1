@@ -24,7 +24,7 @@ IDLE = 0
 SETUP_SENSOR = 1
 STREAMING = 2
 SHUTDOWN_SENSOR = 3
-state = IDLE
+state = SETUP_SENSOR
 sensor_select = 36 # Default to MODE_TORSION_AND_INDIV
 
 # Global variables for use later
@@ -109,8 +109,8 @@ def psoc_pub_sub():
     counter = 0
     SensorExist = 1
     plotShow = 1
-    SensorNum = 3
-    SensorAddress = np.array([8, 9, 10])
+    SensorNum = 1
+    SensorAddress = np.array([8])
 
     while not rospy.is_shutdown():
         if (state == SETUP_SENSOR):
@@ -119,7 +119,7 @@ def psoc_pub_sub():
             sensingMode = sensor_select
             
             # Allocate serial ports how we want them with motors and sensors
-            ts = psoc.TactileSensor(port="/dev/ttyACM1")
+            ts = psoc.TactileSensor(port="/dev/ttyACM2")
             ts.ser.flushInput()
             
             # Assigning the Number of Sensor and Address
@@ -140,6 +140,8 @@ def psoc_pub_sub():
             # Query the Data Length
             ts.sendChar("q")
             time.sleep(0.1)
+            
+#            print(ts.ser.read_all())
             
             ts.packet_size = ord(ts.ser.read(1))-1
             num_sensors_1= int((ts.packet_size - 1) / 2)    
