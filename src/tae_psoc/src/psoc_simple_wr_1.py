@@ -119,7 +119,7 @@ def psoc_pub_sub():
             sensingMode = sensor_select
             
             # Allocate serial ports how we want them with motors and sensors
-            ts = psoc.TactileSensor(port="/dev/ttyACM0")
+            ts = psoc.TactileSensor(port="/dev/ttyACM2")
             ts.ser.flushInput()
             
             # Assigning the Number of Sensor and Address

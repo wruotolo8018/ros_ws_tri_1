@@ -17,6 +17,8 @@ MOVE_TO_POSE_3 = 4
 TIGHTEN = 5
 LOOSEN = 6
 STOPPED = 0
+PURE_CONTACT_CONTROL = 1
+
 state = STOPPED
 
 # Useful saved motor values
@@ -325,7 +327,7 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
-            des_prox_value = 300
+            des_prox_value = 400
             des_dist_value = 300
             
             # Run proportional control on the des and sensed pos values
@@ -342,8 +344,8 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_3):
             # Define desired position values for testing
-            des_prox_value = 500
-            des_dist_value = 500
+            des_prox_value = 400
+            des_dist_value = -300
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)

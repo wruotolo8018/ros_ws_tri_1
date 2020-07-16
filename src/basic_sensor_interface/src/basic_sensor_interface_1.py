@@ -30,8 +30,8 @@ def arduino_map(val, inMin, inMax, outMin, outMax):
     return int((val-inMin)*(outMax-outMin)/(inMax-inMin)+outMin)
 def get_calibration_values():
     global low_vals, high_vals
-    low_vals = [0, 0, 0, 1023, 950, 880, 0, 0, 0, 0, 0, 705, 928, 0, 0]
-    high_vals = [1023, 1023, 1023, 480, 500, 1023, 1023, 1023, 1023, 1023, 1023, 487, 689, 1023, 1023]
+    low_vals = [0, 0, 0, 1023, 950, 880, 0, 0, 0, 0, 0, 705, 400, 0, 0]
+    high_vals = [1023, 1023, 1023, 480, 500, 1023, 1023, 1023, 1023, 1023, 1023, 487, 163, 1023, 1023]
     
 # Callback Functions 
 # State callback is unused right now but can be used to turn sensor on and off
@@ -90,7 +90,7 @@ def basic_sensor_serial():
                     calibrated_vals[i] = arduino_map(val, low_vals[i], high_vals[i], 0, 1000)
                  
                 # Print calibrated values for debugging purposes
-                print(calibrated_vals)
+                #print(calibrated_vals)
                 #print(read_string)
                 #print("Prox Tendon Val: " + str(calibrated_vals[3]))
                 #print("Dist Tendon Val: " + str(calibrated_vals[4]))
