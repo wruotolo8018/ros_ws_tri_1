@@ -27,6 +27,7 @@ def master_state_machine():
         print('[3] = move to pose 3')
         print('[4] = tighten tendons')
         print('[5] = loosen tendons')
+        print('[6] = pure contact controller')
         input_string = raw_input('Input: ')
         
         # Handle input and publish appropriate state
@@ -47,6 +48,9 @@ def master_state_machine():
             pub_master_state.publish(state_string)
         elif (input_string == '5'):
             state_string = "loosen"
+            pub_master_state.publish(state_string)
+        elif (input_string == '6'):
+            state_string = "pure_contact"
             pub_master_state.publish(state_string)
 
 if __name__ == '__main__':

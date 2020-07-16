@@ -35,6 +35,10 @@ tendon_binary_cutoff = np.array([0,0,0,100,100,250,0,0,0])
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
 
+# Nib sensor data variables
+cur_nib_data = np.zeros(36)
+prev_nib_data = np.zeros(36)
+
 # PWM variables
 pos_pwm_array = np.zeros(9)
 contact_pwm_array = np.zeros(9)
@@ -72,6 +76,11 @@ def state_callback(data):
     elif (incomingString == "loosen"):
         state = LOOSEN
         print("Switching state to LOOSEN")
+    elif (incomingString == "pure_contact"):
+        state = PURE_CONTACT_CONTROL
+        print("Switching state to PURE_CONTACT_CONTROL")
+        
+        
    
     
 # Callback function for tendon force sensing data     
@@ -359,6 +368,10 @@ def motor_controller():
             # Cap final pwm value 
             final_pwm_cap(35);   
        
+        elif (state == PURE_CONTACT_CONTROL):
+            print("In state of pure contact control!!!!")
+            
+        
         elif (state == TIGHTEN):
             cur_pwm_array[3:6] = [10,10,10]
         
