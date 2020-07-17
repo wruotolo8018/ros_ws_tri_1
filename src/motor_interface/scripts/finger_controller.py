@@ -46,6 +46,11 @@ force_pwm_array = np.zeros(9)
 tension_pwm_array = np.zeros(9)
 cur_pwm_array = np.zeros(9)
 
+# State controller weights
+w_p = 0
+w_c = 0
+w_f = 0
+
 
 # Accessory function to conveniently map one range of values to another
 def arduino_map(val, inMin, inMax, outMin, outMax):
@@ -81,7 +86,18 @@ def state_callback(data):
         print("Switching state to PURE_CONTACT_CONTROL")
         
         
-   
+# Callback function for nib sensor in individual mode
+def nib_sns_callback(data):
+    # Bump old data to prev variable
+    global cur_nib_data, prev_nib_data
+    prev_nib_data = cur_nib_data
+    
+    # Finger 1
+    cur_nib_data = np.reshape(np.asarray(data.sns_1_Indiv), (-1,1))
+    
+    # TODO: Finger 2
+    # TODO: Finger 3
+    
     
 # Callback function for tendon force sensing data     
 def tendon_sns_callback(data):
@@ -207,18 +223,77 @@ def position_control(des_prox, des_dist, fing_num):
 
 # Simple PID control on contact pressure centroid
 def contact_control(des_xc, fing_num):
+    # Get global sensor data access
+    global cur_nib_data, prev_nib_data
+    
     # TODO: adjust contact_pwm_array based on pressure centroid
-    # Need sensors for this
-    # So currently do nothing
-    x = 1
-  
+    nib_top_avg = np.average(cur_nib_data[0:18])
+    nib_bottom_avg = np.average(cur_nib_data[18:36])
+    # full_avg = np.average(cur_nib_data[0:36])
+    
+    k_temp = 0.3
+    x_c_scaled = k_temp*(nib_top_avg - nib_bottom_avg)
+    
+    # Scale top and bottom for ad hoc calibration
+    if (x_c_scaled < 0):
+        x_c_scaled = x_c_scaled*0.3
+        
+    print("Centroid value: " + str(x_c_scaled))
+        
+    # Basic control law
+    # if x_c is positive, we want to hyperextend
+    # if x_c is negative, we want to curl more
+    relative_scale = 1
+    Ppwm = int(x_c_scaled*relative_scale)
+    Dpwm = int(-x_c_scaled)
+    # Try holding constant???
+    Hpwm = int(0)
+    # Or maintain constant tension
+    
+    # Apply a deadzone if needed for stability (was originally working fine without)
+    one_dir_deadzone = 20
+    Ppwm = process_deadzone(Ppwm, one_dir_deadzone)
+    Dpwm = process_deadzone(Dpwm, one_dir_deadzone)
+    Hpwm = process_deadzone(Hpwm, one_dir_deadzone)
+    
+    # Set pwm array values based on updates
+    contact_pwm_array[fing_num*3 : fing_num*3+3] = [Ppwm, Dpwm, Hpwm]
+    
+    
+        
     
 # Simple PID control grasp force
 def grasp_force_control(des_fn, fing_num):
-    # TODO: modify force_pwm_array based on sensed grasp force
-    # Need sensors for this
-    # So currently do nothing
-    x = 1
+    # Get global sensor data access
+    global cur_nib_data, prev_nib_data
+    
+    # TODO: adjust contact_pwm_array based on pressure centroid
+    full_avg = np.average(cur_nib_data[0:36])
+    if (full_avg < 0):
+        full_avg = 0            
+    print("Full average: " + str(full_avg))
+    
+    # Basic control law
+    # Exert a positive torque on each proportional to contact location
+    # Orrrr just clamp harder
+    relative_scale = 1
+    k_temp = 0.1
+    des_fn = 300
+    force_val = (k_temp*(des_fn - full_avg))
+    
+    Ppwm = int(force_val*relative_scale)
+    Dpwm = int(force_val)
+    # Try blind value = negative of others
+    Hpwm = -int(force_val)
+    
+    # Apply a deadzone if needed for stability (was originally working fine without)
+    one_dir_deadzone = 0
+    Ppwm = process_deadzone(Ppwm, one_dir_deadzone)
+    Dpwm = process_deadzone(Dpwm, one_dir_deadzone)
+    Hpwm = process_deadzone(Hpwm, one_dir_deadzone)
+    
+    # Set pwm array values based on updates
+    force_pwm_array[fing_num*3 : fing_num*3+3] = [Ppwm, Dpwm, Hpwm]
    
     
 # Tendon sensing adaptor to prevent tendon laxity 
@@ -249,11 +324,12 @@ def tendon_tension_control(fing_num):
 def gain_filter(fing_num):
     # Access global variables
     global pos_pwm_array, contact_pwm_array, force_pwm_array, cur_pwm_array
+    global w_p, w_c, w_f
     
     # TODO: Define control variables based on state
-    kp = 1
-    kc = 0
-    kf = 0
+#    w_p = 1
+#    w_c = 0
+#    w_f = 0
     
     # Create manipulation matrices
     prox_index = fing_num*3
@@ -267,9 +343,9 @@ def gain_filter(fing_num):
     full_vec = np.transpose(np.hstack((np.hstack((pos_vec,contact_vec)),force_vec)))
     
     # Build filter array out of diagonal sub-matrices
-    kp_arr = kp*np.identity(3)
-    kc_arr = kc*np.identity(3)
-    kf_arr = kf*np.identity(3)
+    kp_arr = w_p*np.identity(3)
+    kc_arr = w_c*np.identity(3)
+    kf_arr = w_f*np.identity(3)
     filter_array = np.hstack((np.hstack((kp_arr,kc_arr)),kf_arr))
     
     # Take dot product of filter and full vector of pwm values
@@ -287,8 +363,8 @@ def final_pwm_cap(one_dir_final_cap):
     # Access global variables
     global cur_pwm_array
     # Iterate through PWM array, apply cap, and shift center
-#    for i in range(len(cur_pwm_array)):
-#        cur_pwm_array[i] = pwm_cap(cur_pwm_array[i], one_dir_final_cap)
+    for i in range(len(cur_pwm_array)):
+        cur_pwm_array[i] = pwm_cap(cur_pwm_array[i], one_dir_final_cap)
 
 
 # Main loop
@@ -301,6 +377,10 @@ def motor_controller():
     rospy.Subscriber("master_state", String, state_callback)
     rospy.Subscriber("finger_tendon_sensors", tendon_sns, tendon_sns_callback)
     rospy.Subscriber("finger_joint_sensors", joint_sns, joint_sns_callback)
+    rospy.Subscriber("Sensor_Indiv", Sensor_Indiv, nib_sns_callback)
+    
+    
+    
     cmdPub = rospy.Publisher('motor_cmd', String, queue_size=10)
      
     # Global variables
@@ -316,6 +396,10 @@ def motor_controller():
     while not rospy.is_shutdown():  
         # Internal state machine sets pwm array based on state and sensed values
         if (state == MOVE_TO_POSE_1):
+            # Get access to global state weights
+            global w_p, w_c, w_f
+            w_p, w_c, w_f = 1, 0, 0
+
             # Define desired position values for testing
             des_prox_value = 0
             des_dist_value = 0
@@ -362,15 +446,33 @@ def motor_controller():
             # Apply the new gain filter idea to set cur_pwm_array
             gain_filter(1)
             
-            # TODO: modify based on tendon tension
+            # Modify based on tendon tension
             tendon_tension_control(1)
            
             # Cap final pwm value 
             final_pwm_cap(35);   
        
         elif (state == PURE_CONTACT_CONTROL):
-            print("In state of pure contact control!!!!")
+            print("In state of not so pure contact control!!!!")
             
+            # Get access to global state weights
+            global w_p, w_c, w_f
+            w_p, w_c, w_f = 0, 0.5, 0.5
+            
+            # Call contact controller
+            contact_control(0, 1) # des_xc, fing_num
+            
+            # Call grasp force controller
+            grasp_force_control(0, 1) # des force, fing_num
+            
+            # Apply the new gain filter idea to set cur_pwm_array
+            gain_filter(1)
+            
+            # Modify based on tendon tension
+            tendon_tension_control(1)
+           
+            # Cap final pwm value 
+            final_pwm_cap(35);   
         
         elif (state == TIGHTEN):
             cur_pwm_array[3:6] = [10,10,10]
@@ -388,7 +490,7 @@ def motor_controller():
             cur_pwm_array = stop_motor_array
         
         # Print current motor pwm values and resulting string for debugging purposes
-        print("PWM Array: " + str(cur_pwm_array))
+        # print("PWM Array: " + str(cur_pwm_array))
         print("Current motor string: " + cur_motor_string)
         
         # Publish current motor string for motor interface to handle
