@@ -229,10 +229,20 @@ def contact_control(des_xc, fing_num):
     # TODO: adjust contact_pwm_array based on pressure centroid
     nib_top_avg = np.average(cur_nib_data[0:18])
     nib_bottom_avg = np.average(cur_nib_data[18:36])
-    # full_avg = np.average(cur_nib_data[0:36])
     
     k_temp = 0.3
     x_c_scaled = k_temp*(nib_top_avg - nib_bottom_avg)
+    
+    # Derivative control stuff
+    prev_nib_top_avg = np.average(prev_nib_data[0:18])
+    prev_nib_bottom_avg = np.average(prev_nib_data[18:36])
+    
+#    k_temp = 0.3
+#    offset = 15
+#    x_c_scaled = k_temp*(nib_top_avg - nib_bottom_avg*.65) - offset
+    
+    k_d = 0.5
+    x_c_delta = k_d*((nib_top_avg - nib_bottom_avg*.65) - (prev_nib_top_avg - prev_nib_bottom_avg*.65))
     
     # Scale top and bottom for ad hoc calibration
     if (x_c_scaled < 0):
@@ -244,8 +254,8 @@ def contact_control(des_xc, fing_num):
     # if x_c is positive, we want to hyperextend
     # if x_c is negative, we want to curl more
     relative_scale = 1
-    Ppwm = int(x_c_scaled*relative_scale)
-    Dpwm = int(-x_c_scaled)
+    Ppwm = int(x_c_scaled + x_c_delta)
+    Dpwm = int(-x_c_scaled - x_c_delta)
     # Try holding constant???
     Hpwm = int(0)
     # Or maintain constant tension
@@ -278,13 +288,13 @@ def grasp_force_control(des_fn, fing_num):
     # Orrrr just clamp harder
     relative_scale = 1
     k_temp = 0.1
-    des_fn = 300
+    des_fn = 350
     force_val = (k_temp*(des_fn - full_avg))
     
     Ppwm = int(force_val*relative_scale)
     Dpwm = int(force_val)
     # Try blind value = negative of others
-    Hpwm = -int(force_val)
+    Hpwm = -int(force_val)*1.0
     
     # Apply a deadzone if needed for stability (was originally working fine without)
     one_dir_deadzone = 0
@@ -420,8 +430,8 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
-            des_prox_value = 400
-            des_dist_value = 300
+            des_prox_value = 200
+            des_dist_value = 200
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)
@@ -437,7 +447,7 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_3):
             # Define desired position values for testing
-            des_prox_value = 400
+            des_prox_value = 300
             des_dist_value = -300
             
             # Run proportional control on the des and sensed pos values
@@ -504,5 +514,3 @@ if __name__ == '__main__':
         motor_controller()
     except rospy.ROSInterruptException:
         pass
-    
-    

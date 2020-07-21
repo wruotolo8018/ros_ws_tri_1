@@ -66,9 +66,20 @@ def logging_cmd_callback(data):
         
         # Plot data for sanity check
         fig, axs = plt.subplots(1)
-        axs.set_title('Individual Nib Sensors')
-        for i in range(36):
-            axs.plot(nib_data_storage_array[i,:])
+        axs.set_title('X_c and F_grasp')
+        x_c_storage_array = np.zeros(nib_data_storage_array.shape[1])
+        f_grasp_storage_array = np.zeros(nib_data_storage_array.shape[1])
+        
+        for i in range(nib_data_storage_array.shape[1]):
+            x_c_storage_array[i] = np.average(nib_data_storage_array[0:18, i]) - np.average(nib_data_storage_array[18:36, i])
+            f_grasp_storage_array[i] = np.average(nib_data_storage_array[:, i])
+            
+        axs.plot(x_c_storage_array, label = 'x_c')
+        axs.plot(f_grasp_storage_array, label = 'f_grasp')
+        axs.legend();
+        
+#        for i in range(36):
+#            axs.plot(nib_data_storage_array[i,:])
         
         # Show plot
         plt.show()
