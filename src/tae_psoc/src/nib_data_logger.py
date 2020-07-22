@@ -37,7 +37,10 @@ tendon_binary_engagement = np.zeros(9)
 tendon_binary_cutoff = np.array([0,0,0,100,100,250,0,0,0])
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
+
+# Nib data variables
 cur_nib_indiv_data = np.zeros(36)
+prev_nib_data = np.zeros(36)
 
 # Alternative method
 nib_data_storage_array = np.zeros((36,2))
@@ -53,6 +56,7 @@ def logging_cmd_callback(data):
     incomingString = str(data.data)
     global nib_data_storage_array, defaultFileName, dataDirectory
     global joint_data_storage_array, tendon_data_storage_array
+    global prev_nib_data
     
     if (incomingString == 'flush_data'):
         # Zero out all data storage arrays
@@ -69,13 +73,17 @@ def logging_cmd_callback(data):
         axs.set_title('X_c and F_grasp')
         x_c_storage_array = np.zeros(nib_data_storage_array.shape[1])
         f_grasp_storage_array = np.zeros(nib_data_storage_array.shape[1])
+        x_delta_storage_array = np.zeros(nib_data_storage_array.shape[1])
         
         for i in range(nib_data_storage_array.shape[1]):
             x_c_storage_array[i] = np.average(nib_data_storage_array[0:18, i]) - np.average(nib_data_storage_array[18:36, i])
             f_grasp_storage_array[i] = np.average(nib_data_storage_array[:, i])
-            
+            if (i > 0):
+                x_delta_storage_array[i] = x_c_storage_array[i] - x_c_storage_array[i-1]
+                
         axs.plot(x_c_storage_array, label = 'x_c')
         axs.plot(f_grasp_storage_array, label = 'f_grasp')
+#        axs.plot(x_delta_storage_array, label = 'x_d')
         axs.legend();
         
 #        for i in range(36):

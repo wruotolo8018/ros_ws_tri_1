@@ -51,6 +51,11 @@ w_p = 0
 w_c = 0
 w_f = 0
 
+# Temp working variables
+prev_x_c_scaled = 0.0
+integral_error = 0.0
+integral_error_fg = 0.0
+
 
 # Accessory function to conveniently map one range of values to another
 def arduino_map(val, inMin, inMax, outMin, outMax):
@@ -183,9 +188,9 @@ def position_control(des_prox, des_dist, fing_num):
     global cur_joint_data, pos_pwm_array
     
     # Set control variables
-    kp1 = 0.3
-    kp2 = 0.3  
-    looseScale = 0.75
+    kp1 = 0.2
+    kp2 = 0.2 
+    looseScale = 0.9
     one_dir_pmw_cap = 30 # In PWM/2, not sensor values
     one_dir_deadzone = 0 # In PWM/2, not sensor values
     prox_index = fing_num*2
@@ -224,44 +229,55 @@ def position_control(des_prox, des_dist, fing_num):
 # Simple PID control on contact pressure centroid
 def contact_control(des_xc, fing_num):
     # Get global sensor data access
-    global cur_nib_data, prev_nib_data
+    global cur_nib_data, prev_nib_data, prev_x_c_scaled, integral_error
     
-    # TODO: adjust contact_pwm_array based on pressure centroid
+    # Position Controller
     nib_top_avg = np.average(cur_nib_data[0:18])
     nib_bottom_avg = np.average(cur_nib_data[18:36])
-    
-    k_temp = 0.3
+    k_temp = 0.2
     x_c_scaled = k_temp*(nib_top_avg - nib_bottom_avg)
-    
-    # Derivative control stuff
-    prev_nib_top_avg = np.average(prev_nib_data[0:18])
-    prev_nib_bottom_avg = np.average(prev_nib_data[18:36])
-    
-#    k_temp = 0.3
-#    offset = 15
-#    x_c_scaled = k_temp*(nib_top_avg - nib_bottom_avg*.65) - offset
-    
-    k_d = 0.5
-    x_c_delta = k_d*((nib_top_avg - nib_bottom_avg*.65) - (prev_nib_top_avg - prev_nib_bottom_avg*.65))
-    
     # Scale top and bottom for ad hoc calibration
     if (x_c_scaled < 0):
         x_c_scaled = x_c_scaled*0.3
+#    print("x_c_scaled value: " + str(x_c_scaled))
+    
+    # Derivative control stuff
+    k_d = 5.0
+    x_c_delta = k_d * (x_c_scaled - prev_x_c_scaled)
+    prev_x_c_scaled = x_c_scaled
+#    prev_nib_top_avg = np.average(prev_nib_data[0:18])
+#    prev_nib_bottom_avg = np.average(prev_nib_data[18:36])
+#    k_d = 0.05
+#    x_c_delta = k_d*((nib_top_avg - nib_bottom_avg*.65) - (prev_nib_top_avg - prev_nib_bottom_avg*.65))
+#    print("Derivative control value: " + str(x_c_delta))
+    
+    # Integral Control stuff
+    integral_windup = 500
+    k_i = 0.0
+    integral_x_c_deadzone = 5
+    if not (np.absolute(x_c_scaled) < integral_x_c_deadzone):
+        integral_error = (integral_error + x_c_scaled)
+    if (integral_error > integral_windup): 
+        integral_error = integral_windup
+    elif (integral_error < -integral_windup):
+        integral_error = -integral_windup
+    integral_error_scaled = k_i * integral_error
+    
+#    print("Integral control value: " + str(integral_error_scaled))
         
-    print("Centroid value: " + str(x_c_scaled))
         
     # Basic control law
     # if x_c is positive, we want to hyperextend
     # if x_c is negative, we want to curl more
-    relative_scale = 1
-    Ppwm = int(x_c_scaled + x_c_delta)
-    Dpwm = int(-x_c_scaled - x_c_delta)
+#    relative_scale = 1
+    Ppwm = int(x_c_scaled + x_c_delta + integral_error_scaled)
+    Dpwm = int(-x_c_scaled - x_c_delta - integral_error_scaled)
     # Try holding constant???
     Hpwm = int(0)
     # Or maintain constant tension
     
     # Apply a deadzone if needed for stability (was originally working fine without)
-    one_dir_deadzone = 20
+    one_dir_deadzone = 15
     Ppwm = process_deadzone(Ppwm, one_dir_deadzone)
     Dpwm = process_deadzone(Dpwm, one_dir_deadzone)
     Hpwm = process_deadzone(Hpwm, one_dir_deadzone)
@@ -275,7 +291,7 @@ def contact_control(des_xc, fing_num):
 # Simple PID control grasp force
 def grasp_force_control(des_fn, fing_num):
     # Get global sensor data access
-    global cur_nib_data, prev_nib_data
+    global cur_nib_data, prev_nib_data, integral_error_fg
     
     # TODO: adjust contact_pwm_array based on pressure centroid
     full_avg = np.average(cur_nib_data[0:36])
@@ -286,21 +302,39 @@ def grasp_force_control(des_fn, fing_num):
     # Basic control law
     # Exert a positive torque on each proportional to contact location
     # Orrrr just clamp harder
-    relative_scale = 1
-    k_temp = 0.1
-    des_fn = 350
-    force_val = (k_temp*(des_fn - full_avg))
+    relative_scale = 0.5
+    k_temp = 0.2
     
-    Ppwm = int(force_val*relative_scale)
-    Dpwm = int(force_val)
+    k_i = 0.02
+    integral_windup = 5000
+    des_fn = 300
+    force_val = (des_fn - full_avg)
+    print("Raw force value: " + str(force_val))
+    force_val_scaled = k_temp*force_val
+    
+    # Integral Control stuff
+    force_update_deadzone = 5
+    if not (np.absolute(force_val_scaled) < force_update_deadzone): # Apply mini deadzone
+        integral_error_fg = (integral_error_fg + force_val) # Main error integration
+    # Apply windup limit
+    if (integral_error_fg > integral_windup): 
+        integral_error_fg = integral_windup
+    elif (integral_error_fg < -integral_windup):
+        integral_error_fg = -integral_windup
+    integral_error_scaled = k_i * integral_error_fg
+    # Debug print
+    print("Integral control value: " + str(integral_error_scaled))
+    # Update PWM Commands
+    Ppwm = int(force_val_scaled + integral_error_scaled)
+    Dpwm = int(force_val_scaled + integral_error_scaled)
     # Try blind value = negative of others
-    Hpwm = -int(force_val)*1.0
+    Hpwm = -int(force_val_scaled + integral_error_scaled)*relative_scale
     
     # Apply a deadzone if needed for stability (was originally working fine without)
     one_dir_deadzone = 0
     Ppwm = process_deadzone(Ppwm, one_dir_deadzone)
     Dpwm = process_deadzone(Dpwm, one_dir_deadzone)
-    Hpwm = process_deadzone(Hpwm, one_dir_deadzone)
+    Hpwm = process_deadzone(Hpwm, 30)
     
     # Set pwm array values based on updates
     force_pwm_array[fing_num*3 : fing_num*3+3] = [Ppwm, Dpwm, Hpwm]
@@ -323,6 +357,7 @@ def tendon_tension_control(fing_num):
         # If loose, tighten
         if (tendon_binary_engagement[i] == 0):
             tension_pwm_array[i] = binary_gain
+            print("Tendon tension controller activated")
         # If already tense, do nothing
         else:
             tension_pwm_array[i] = 0
@@ -426,12 +461,12 @@ def motor_controller():
             tendon_tension_control(1)
             
             # Cap final pwm value 
-            final_pwm_cap(35);
+            final_pwm_cap(45);
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
-            des_prox_value = 200
-            des_dist_value = 200
+            des_prox_value = 400
+            des_dist_value = 400
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value,1)
@@ -443,7 +478,7 @@ def motor_controller():
             tendon_tension_control(1)
            
             # Cap final pwm value 
-            final_pwm_cap(35);
+            final_pwm_cap(45);
         
         elif (state == MOVE_TO_POSE_3):
             # Define desired position values for testing
@@ -460,7 +495,7 @@ def motor_controller():
             tendon_tension_control(1)
            
             # Cap final pwm value 
-            final_pwm_cap(35);   
+            final_pwm_cap(45);   
        
         elif (state == PURE_CONTACT_CONTROL):
             print("In state of not so pure contact control!!!!")
