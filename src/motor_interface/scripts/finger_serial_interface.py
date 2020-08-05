@@ -22,6 +22,7 @@ def motor_talker():
     # Constantly update output motor string based on incoming commands
     global cur_motor_string
     while not rospy.is_shutdown():
+        print(cur_motor_string)
         com.write(cur_motor_string)
         rate.sleep()
 
