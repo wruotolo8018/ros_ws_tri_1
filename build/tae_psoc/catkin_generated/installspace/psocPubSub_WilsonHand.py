@@ -94,8 +94,8 @@ def mainLoop(savingFileName):
 
     ##################################################
     #%%
-    SensorNum = 3
-    SensorAddress = np.array([8, 9, 10])
+    SensorNum = 1
+    SensorAddress = np.array([8])
 
     MODE_ONE_PAD = 0 
     MODE_FOUR_PAD = 1

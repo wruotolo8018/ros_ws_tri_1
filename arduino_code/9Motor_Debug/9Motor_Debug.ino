@@ -89,7 +89,7 @@ void loop() {
     else{
       int motorNum = inChar - '0';
       int motorDir = inDir;
-      runMotor(motorNum, motorDir, 50);
+      runMotor(motorNum, motorDir, 100);
       
       Serial.print("Running motor ");
       Serial.print(inChar);

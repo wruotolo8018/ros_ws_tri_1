@@ -31,7 +31,7 @@ stop_motor_array = np.array([0,0,0,0,0,0,0,0,0])
 cur_tendon_data = np.zeros(9)
 prev_tendon_data = np.zeros(9)
 tendon_binary_engagement = np.zeros(9)
-tendon_binary_cutoff = np.array([0,0,0,100,100,250,0,0,0])
+tendon_binary_cutoff = np.array([0,0,0,100,100,200,0,0,0])
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
 
@@ -207,8 +207,11 @@ def position_control(des_prox, des_dist, fing_num):
         Dpwm = Dpwm*looseScale
     if (Hpwm < 0):
         Hpwm = Hpwm*looseScale*.1
-    
-    
+
+    print(Ppwm)
+    print(Dpwm)
+    print(Hpwm)
+        
     # Cap pwm to max for component safety (there should be another larger cap at end of controls)
     Ppwm = pwm_cap(Ppwm, one_dir_pmw_cap)
     Dpwm = pwm_cap(Dpwm, one_dir_pmw_cap)
@@ -458,10 +461,10 @@ def motor_controller():
             gain_filter(1)
             
             # Modify based on tendon tension
-            tendon_tension_control(1)
+#            tendon_tension_control(1)
             
             # Cap final pwm value 
-            final_pwm_cap(45);
+            final_pwm_cap(25);
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
@@ -469,16 +472,16 @@ def motor_controller():
             des_dist_value = 400
             
             # Run proportional control on the des and sensed pos values
-            position_control(des_prox_value, des_dist_value,1)
+            position_control(des_prox_value, des_dist_value, 1)
                         
             # Apply the new gain filter idea to set cur_pwm_array
             gain_filter(1)
             
             # TODO: modify based on tendon tension
-            tendon_tension_control(1)
+#            tendon_tension_control(1)
            
             # Cap final pwm value 
-            final_pwm_cap(45);
+            final_pwm_cap(30);
         
         elif (state == MOVE_TO_POSE_3):
             # Define desired position values for testing
@@ -492,10 +495,10 @@ def motor_controller():
             gain_filter(1)
             
             # Modify based on tendon tension
-            tendon_tension_control(1)
+#            tendon_tension_control(1)
            
             # Cap final pwm value 
-            final_pwm_cap(45);   
+            final_pwm_cap(30);   
        
         elif (state == PURE_CONTACT_CONTROL):
             print("In state of not so pure contact control!!!!")
@@ -520,11 +523,13 @@ def motor_controller():
             final_pwm_cap(35);   
         
         elif (state == TIGHTEN):
+#            cur_pwm_array[:] = [10,10,10,10,10,10,10,10,10]
             cur_pwm_array[3:6] = [10,10,10]
         
         elif (state == LOOSEN):
+#            cur_pwm_array[:] = [-10,-10,-10,-10,-10,-10,-10,-10,-10]
             cur_pwm_array[3:6] = [-10,-10,-10]
-            
+        
         # Process pwm array into string for serial comms
         cur_motor_string = pwm_array_to_string(cur_pwm_array)
         
