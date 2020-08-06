@@ -447,8 +447,8 @@ def motor_controller():
             w_p, w_c, w_f = 1, 0, 0
 
             # Define desired position values for testing
-            des_prox_value = 0
-            des_dist_value = 0
+            des_prox_value = -300
+            des_dist_value = -200
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value, 0)
@@ -470,8 +470,8 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
-            des_prox_value = 300
-            des_dist_value = 300
+            des_prox_value = 200
+            des_dist_value = -100
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value, 0)
@@ -487,24 +487,28 @@ def motor_controller():
 #            tendon_tension_control(1)
            
             # Cap final pwm value 
-            final_pwm_cap(45);
+            final_pwm_cap(40);
         
         elif (state == MOVE_TO_POSE_3):
             # Define desired position values for testing
-            des_prox_value = 300
-            des_dist_value = -300
+            des_prox_value = 500
+            des_dist_value = 500
             
             # Run proportional control on the des and sensed pos values
-            position_control(des_prox_value, des_dist_value,1)
+            position_control(des_prox_value, des_dist_value, 0)
+            position_control(des_prox_value, des_dist_value, 1)
+            position_control(des_prox_value, des_dist_value, 2)
                         
             # Apply the new gain filter idea to set cur_pwm_array
+            gain_filter(0)
             gain_filter(1)
+            gain_filter(2)
             
             # Modify based on tendon tension
 #            tendon_tension_control(1)
            
             # Cap final pwm value 
-            final_pwm_cap(45);   
+            final_pwm_cap(40);   
        
         elif (state == PURE_CONTACT_CONTROL):
             print("In state of not so pure contact control!!!!")
