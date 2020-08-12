@@ -109,8 +109,8 @@ def psoc_pub_sub():
     counter = 0
     SensorExist = 1
     plotShow = 1
-    SensorNum = 1
-    SensorAddress = np.array([8])
+    SensorNum = 3
+    SensorAddress = np.array([8,9,10])
 
     while not rospy.is_shutdown():
         if (state == SETUP_SENSOR):
