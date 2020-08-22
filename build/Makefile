@@ -294,7 +294,7 @@ _catkin_empty_exported_target: cmake_check_build_system
 
 # fast build rule for target.
 _catkin_empty_exported_target/fast:
-	$(MAKE) -f master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/build.make master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/build
+	$(MAKE) -f hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/build.make hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/build
 .PHONY : _catkin_empty_exported_target/fast
 
 #=============================================================================

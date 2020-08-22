@@ -5,6 +5,7 @@
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("gtest")
+subdirs("hand_interface")
 subdirs("master_state_machine")
 subdirs("robotiq/robotiq")
 subdirs("robotiq/robotiq_2f_140_gripper_visualization")
@@ -18,7 +19,6 @@ subdirs("universal_robot/ur_description")
 subdirs("universal_robot/ur_e_description")
 subdirs("universal_robot/ur_msgs")
 subdirs("basic_sensor_interface")
-subdirs("beginner_tutorials")
 subdirs("motor_interface")
 subdirs("robotiq/robotiq_ethercat")
 subdirs("robotiq/robotiq_2f_gripper_control")

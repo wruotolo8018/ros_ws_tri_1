@@ -869,6 +869,12 @@ gtest_hide_internal_symbols:BOOL=OFF
 //Dependencies for the target
 gtest_main_LIB_DEPENDS:STATIC=general;-lpthread;general;gtest;
 
+//Value Computed by CMake
+hand_interface_BINARY_DIR:STATIC=/home/wilson/ros_ws_1/build/hand_interface
+
+//Value Computed by CMake
+hand_interface_SOURCE_DIR:STATIC=/home/wilson/ros_ws_1/src/hand_interface
+
 //The directory containing a CMake configuration file for hardware_interface.
 hardware_interface_DIR:PATH=/opt/ros/melodic/share/hardware_interface/cmake
 

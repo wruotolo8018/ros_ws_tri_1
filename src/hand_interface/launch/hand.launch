@@ -1,0 +1,5 @@
+<launch>
+  <node name="basic_sensor_interface_1" pkg="hand_interface" type="basic_sensor_interface_1.py" />
+  <node name="finger_serial_interface" pkg="hand_interface" type="finger_serial_interface.py" />
+  <node name="nib_data_logger" pkg="hand_interface" type="nib_data_logger.py" />  
+</launch>

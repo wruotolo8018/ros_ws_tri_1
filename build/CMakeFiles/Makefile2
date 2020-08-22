@@ -413,6 +413,56 @@ clean: gtest/googlemock/gtest/CMakeFiles/gtest.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Directory level rules for directory hand_interface
+
+# Convenience name for "all" pass in the directory.
+hand_interface/all:
+
+.PHONY : hand_interface/all
+
+# Convenience name for "clean" pass in the directory.
+hand_interface/clean: hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/clean
+
+.PHONY : hand_interface/clean
+
+# Convenience name for "preinstall" pass in the directory.
+hand_interface/preinstall:
+
+.PHONY : hand_interface/preinstall
+
+#=============================================================================
+# Target rules for target hand_interface/CMakeFiles/_catkin_empty_exported_target.dir
+
+# All Build rule for target.
+hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/all:
+	$(MAKE) -f hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/build.make hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/depend
+	$(MAKE) -f hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/build.make hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/wilson/ros_ws_1/build/CMakeFiles --progress-num= "Built target _catkin_empty_exported_target"
+.PHONY : hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/all
+
+# Build rule for subdir invocation for target.
+hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wilson/ros_ws_1/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wilson/ros_ws_1/build/CMakeFiles 0
+.PHONY : hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/rule
+
+# Convenience name for target.
+_catkin_empty_exported_target: hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/rule
+
+.PHONY : _catkin_empty_exported_target
+
+# clean rule for target.
+hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/clean:
+	$(MAKE) -f hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/build.make hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/clean
+.PHONY : hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/clean
+
+# clean rule for target.
+clean: hand_interface/CMakeFiles/_catkin_empty_exported_target.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Directory level rules for directory master_state_machine
 
 # Convenience name for "all" pass in the directory.
@@ -421,7 +471,7 @@ master_state_machine/all:
 .PHONY : master_state_machine/all
 
 # Convenience name for "clean" pass in the directory.
-master_state_machine/clean: master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/clean
+master_state_machine/clean:
 
 .PHONY : master_state_machine/clean
 
@@ -429,38 +479,6 @@ master_state_machine/clean: master_state_machine/CMakeFiles/_catkin_empty_export
 master_state_machine/preinstall:
 
 .PHONY : master_state_machine/preinstall
-
-#=============================================================================
-# Target rules for target master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir
-
-# All Build rule for target.
-master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/all:
-	$(MAKE) -f master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/build.make master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/depend
-	$(MAKE) -f master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/build.make master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/wilson/ros_ws_1/build/CMakeFiles --progress-num= "Built target _catkin_empty_exported_target"
-.PHONY : master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/all
-
-# Build rule for subdir invocation for target.
-master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wilson/ros_ws_1/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/wilson/ros_ws_1/build/CMakeFiles 0
-.PHONY : master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/rule
-
-# Convenience name for target.
-_catkin_empty_exported_target: master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/rule
-
-.PHONY : _catkin_empty_exported_target
-
-# clean rule for target.
-master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/clean:
-	$(MAKE) -f master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/build.make master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/clean
-.PHONY : master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/clean
-
-# clean rule for target.
-clean: master_state_machine/CMakeFiles/_catkin_empty_exported_target.dir/clean
-
-.PHONY : clean
 
 #=============================================================================
 # Directory level rules for directory robotiq/robotiq
@@ -2817,24 +2835,6 @@ basic_sensor_interface/CMakeFiles/basic_sensor_interface_generate_messages_eus.d
 clean: basic_sensor_interface/CMakeFiles/basic_sensor_interface_generate_messages_eus.dir/clean
 
 .PHONY : clean
-
-#=============================================================================
-# Directory level rules for directory beginner_tutorials
-
-# Convenience name for "all" pass in the directory.
-beginner_tutorials/all:
-
-.PHONY : beginner_tutorials/all
-
-# Convenience name for "clean" pass in the directory.
-beginner_tutorials/clean:
-
-.PHONY : beginner_tutorials/clean
-
-# Convenience name for "preinstall" pass in the directory.
-beginner_tutorials/preinstall:
-
-.PHONY : beginner_tutorials/preinstall
 
 #=============================================================================
 # Directory level rules for directory motor_interface
