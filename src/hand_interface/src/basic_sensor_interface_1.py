@@ -30,8 +30,8 @@ def arduino_map(val, inMin, inMax, outMin, outMax):
     return int((val-inMin)*(outMax-outMin)/(inMax-inMin)+outMin)
 def get_calibration_values():
     global low_vals, high_vals
-    low_vals = [0, 0, 0, 1023, 950, 1000, 0, 0, 0, 677, 476, 672, 386, 679, 238] 
-    high_vals = [1023, 1023, 1023, 480, 700, 800, 1023, 1023, 1023, 471, 713, 455, 162, 454, 463] 
+    low_vals = [950, 930, 910, 1023, 950, 1000, 1000, 1000, 1000, 677, 476, 672, 386, 679, 238] 
+    high_vals = [575, 700, 620, 480, 700, 800, 630, 650, 930, 471, 713, 455, 162, 454, 463] 
     
 # Callback Functions 
 # State callback is unused right now but can be used to turn sensor on and off

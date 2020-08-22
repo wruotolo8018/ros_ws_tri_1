@@ -35,9 +35,16 @@ tendon_binary_cutoff = np.array([0,0,0,100,100,200,0,0,0])
 cur_joint_data = np.zeros(6)
 prev_joint_data = np.zeros(6)
 
+# Temp substate
+NOT_GRASPING = 0
+GRASP_START = 1
+GRASP_LATER = 2
+grasp_substate = NOT_GRASPING
+grasp_start_time = 0
+
 # Nib sensor data variables
-cur_nib_data = np.zeros(36)
-prev_nib_data = np.zeros(36)
+cur_nib_data = np.zeros(36*3)
+prev_nib_data = np.zeros(36*3)
 
 # PWM variables
 pos_pwm_array = np.zeros(9)
@@ -51,10 +58,10 @@ w_p = 0
 w_c = 0
 w_f = 0
 
-# Temp working variables
-prev_x_c_scaled = 0.0
-integral_error = 0.0
-integral_error_fg = 0.0
+# Contact working variables
+prev_x_c_scaled = np.zeros(3) 
+integral_error = np.zeros(3)
+integral_error_fg = np.zeros(3)
 
 
 # Accessory function to conveniently map one range of values to another
@@ -98,10 +105,13 @@ def nib_sns_callback(data):
     prev_nib_data = cur_nib_data
     
     # Finger 1
-    cur_nib_data = np.reshape(np.asarray(data.sns_1_Indiv), (-1,1))
+    cur_nib_data[0:36] = np.asarray(data.sns_1_Indiv)
     
-    # TODO: Finger 2
-    # TODO: Finger 3
+    # Thumb
+    cur_nib_data[36:36*2] = np.asarray(data.sns_2_Indiv)
+    
+    # Finger 2
+    cur_nib_data[36*2:36*3] = np.asarray(data.sns_3_Indiv)
     
     
 # Callback function for tendon force sensing data     
@@ -207,10 +217,6 @@ def position_control(des_prox, des_dist, fing_num):
         Dpwm = Dpwm*looseScale
     if (Hpwm < 0):
         Hpwm = Hpwm*looseScale*.1
-
-    print(Ppwm)
-    print(Dpwm)
-    print(Hpwm)
         
     # Cap pwm to max for component safety (there should be another larger cap at end of controls)
     Ppwm = pwm_cap(Ppwm, one_dir_pmw_cap)
@@ -235,8 +241,8 @@ def contact_control(des_xc, fing_num):
     global cur_nib_data, prev_nib_data, prev_x_c_scaled, integral_error
     
     # Position Controller
-    nib_top_avg = np.average(cur_nib_data[0:18])
-    nib_bottom_avg = np.average(cur_nib_data[18:36])
+    nib_top_avg = np.average(cur_nib_data[fing_num*36:18+fing_num*36])
+    nib_bottom_avg = np.average(cur_nib_data[18+fing_num*36:36+fing_num*36])
     k_temp = 0.2
     x_c_scaled = k_temp*(nib_top_avg - nib_bottom_avg)
     # Scale top and bottom for ad hoc calibration
@@ -246,26 +252,20 @@ def contact_control(des_xc, fing_num):
     
     # Derivative control stuff
     k_d = 5.0
-    x_c_delta = k_d * (x_c_scaled - prev_x_c_scaled)
-    prev_x_c_scaled = x_c_scaled
-#    prev_nib_top_avg = np.average(prev_nib_data[0:18])
-#    prev_nib_bottom_avg = np.average(prev_nib_data[18:36])
-#    k_d = 0.05
-#    x_c_delta = k_d*((nib_top_avg - nib_bottom_avg*.65) - (prev_nib_top_avg - prev_nib_bottom_avg*.65))
-#    print("Derivative control value: " + str(x_c_delta))
+    x_c_delta = k_d * (x_c_scaled - prev_x_c_scaled[fing_num])
+    prev_x_c_scaled[fing_num] = x_c_scaled
     
     # Integral Control stuff
     integral_windup = 500
     k_i = 0.0
     integral_x_c_deadzone = 5
     if not (np.absolute(x_c_scaled) < integral_x_c_deadzone):
-        integral_error = (integral_error + x_c_scaled)
-    if (integral_error > integral_windup): 
-        integral_error = integral_windup
-    elif (integral_error < -integral_windup):
-        integral_error = -integral_windup
-    integral_error_scaled = k_i * integral_error
-    
+        integral_error[fing_num] = (integral_error[fing_num] + x_c_scaled)
+    if (integral_error[fing_num] > integral_windup): 
+        integral_error[fing_num] = integral_windup
+    elif (integral_error[fing_num] < -integral_windup):
+        integral_error[fing_num] = -integral_windup
+    integral_error_scaled = k_i * integral_error[fing_num]
 #    print("Integral control value: " + str(integral_error_scaled))
         
         
@@ -294,13 +294,13 @@ def contact_control(des_xc, fing_num):
 # Simple PID control grasp force
 def grasp_force_control(des_fn, fing_num):
     # Get global sensor data access
-    global cur_nib_data, prev_nib_data, integral_error_fg
+    global cur_nib_data, prev_nib_data, integral_error_fg, grasp_substate
     
     # TODO: adjust contact_pwm_array based on pressure centroid
-    full_avg = np.average(cur_nib_data[0:36])
+    full_avg = np.average(cur_nib_data[fing_num*36:36+fing_num*36])
     if (full_avg < 0):
         full_avg = 0            
-    print("Full average: " + str(full_avg))
+#    print("Full average: " + str(full_avg))
     
     # Basic control law
     # Exert a positive torque on each proportional to contact location
@@ -312,26 +312,34 @@ def grasp_force_control(des_fn, fing_num):
     integral_windup = 5000
     des_fn = 300
     force_val = (des_fn - full_avg)
-    print("Raw force value: " + str(force_val))
+#    print("Raw force value for finger " + str(fing_num) + ": " + str(force_val))
     force_val_scaled = k_temp*force_val
     
     # Integral Control stuff
     force_update_deadzone = 5
     if not (np.absolute(force_val_scaled) < force_update_deadzone): # Apply mini deadzone
-        integral_error_fg = (integral_error_fg + force_val) # Main error integration
+        integral_error_fg[fing_num] = (integral_error_fg[fing_num] + force_val) # Main error integration
     # Apply windup limit
-    if (integral_error_fg > integral_windup): 
-        integral_error_fg = integral_windup
-    elif (integral_error_fg < -integral_windup):
-        integral_error_fg = -integral_windup
-    integral_error_scaled = k_i * integral_error_fg
+    if (integral_error_fg[fing_num] > integral_windup): 
+        integral_error_fg[fing_num] = integral_windup
+    elif (integral_error_fg[fing_num] < -integral_windup):
+        integral_error_fg[fing_num] = -integral_windup
+    integral_error_scaled = k_i * integral_error_fg[fing_num]
     # Debug print
-    print("Integral control value: " + str(integral_error_scaled))
+#    print("Integral control value: " + str(integral_error_scaled))
     # Update PWM Commands
     Ppwm = int(force_val_scaled + integral_error_scaled)
     Dpwm = int(force_val_scaled + integral_error_scaled)
     # Try blind value = negative of others
-    Hpwm = -int(force_val_scaled + integral_error_scaled)*relative_scale
+#    Hpwm = -int(force_val_scaled + integral_error_scaled)*relative_scale
+    
+    # Depending on substate either loosen tendon or hold constant
+    if grasp_substate == GRASP_START:
+        print("In grasp start phase")
+        Hpwm = -30
+    else:
+        print("In else statement for other grasping")
+        Hpwm = 0
     
     # Apply a deadzone if needed for stability (was originally working fine without)
     one_dir_deadzone = 0
@@ -366,6 +374,7 @@ def tendon_tension_control(fing_num):
             tension_pwm_array[i] = 0
     # Add binary adjustments to cur_pwm_array for processing before pwm cap
     for i in range(len(cur_pwm_array)):
+#        if ((i+1) % 3 == 0):
         cur_pwm_array[i] += float(tension_pwm_array[i])
     
 
@@ -404,7 +413,7 @@ def gain_filter(fing_num):
     
     # Set cur_pwm_array values to result of filtering operation
     cur_pwm_array[prox_index:hype_index+1] = final_pwm_vec
-    print("filtPWMs: " + str(cur_pwm_array))
+#    print("filtPWMs: " + str(cur_pwm_array))
 
 
 # Final safety function to put a cap on max PWM
@@ -433,7 +442,7 @@ def motor_controller():
     cmdPub = rospy.Publisher('motor_cmd', String, queue_size=10)
      
     # Global variables
-    global cur_pwm_array, cur_des_pose
+    global cur_pwm_array, cur_des_pose, grasp_substate, grasp_start_time, w_p, w_c, w_f
     print("Start PWM ARRAY: " + str(cur_pwm_array))
     
     # Set loop speed
@@ -446,8 +455,10 @@ def motor_controller():
         # Internal state machine sets pwm array based on state and sensed values
         if (state == MOVE_TO_POSE_1):
             # Get access to global state weights
-            global w_p, w_c, w_f
+#            global w_p, w_c, w_f
             w_p, w_c, w_f = 1, 0, 0
+            
+            grasp_substate = NOT_GRASPING
 
             # Define desired position values for testing
             des_prox_value = -300
@@ -471,8 +482,8 @@ def motor_controller():
         
         elif (state == MOVE_TO_POSE_2):
             # Define desired position values for testing
-            des_prox_value = 200
-            des_dist_value = -100
+            des_prox_value = 100
+            des_dist_value = -50
             
             # Run proportional control on the des and sensed pos values
             position_control(des_prox_value, des_dist_value, 0)
@@ -512,26 +523,38 @@ def motor_controller():
             final_pwm_cap(40);   
        
         elif (state == PURE_CONTACT_CONTROL):
-            print("In state of not so pure contact control!!!!")
+                        
+            if (grasp_substate == NOT_GRASPING):
+                grasp_substate = GRASP_START
+                grasp_start_time = rospy.get_time()
+                
+            if (rospy.get_time() > grasp_start_time + 2.0):
+                grasp_substate = GRASP_LATER
             
             # Get access to global state weights
-            global w_p, w_c, w_f
+#            global w_p, w_c, w_f
             w_p, w_c, w_f = 0, 0.5, 0.5
             
             # Call contact controller
+            contact_control(0, 0) # des_xc, fing_num
             contact_control(0, 1) # des_xc, fing_num
+            contact_control(0, 2) # des_xc, fing_num
             
             # Call grasp force controller
+            grasp_force_control(0, 0) # des force, fing_num
             grasp_force_control(0, 1) # des force, fing_num
+            grasp_force_control(0, 2) # des force, fing_num
             
             # Apply the new gain filter idea to set cur_pwm_array
+            gain_filter(0)
             gain_filter(1)
+            gain_filter(2)
             
             # Modify based on tendon tension
-            tendon_tension_control(1)
+#            tendon_tension_control(1)
            
             # Cap final pwm value 
-            final_pwm_cap(35);   
+            final_pwm_cap(30);   
         
         elif (state == TIGHTEN):
             cur_pwm_array[:] = [10,10,10,10,10,10,10,10,10]
@@ -550,7 +573,7 @@ def motor_controller():
         
         # Print current motor pwm values and resulting string for debugging purposes
         # print("PWM Array: " + str(cur_pwm_array))
-        print("Current motor string: " + cur_motor_string)
+#        print("Current motor string: " + cur_motor_string)
         
         # Publish current motor string for motor interface to handle
         cmdPub.publish(cur_motor_string)
